@@ -1,18 +1,14 @@
 ---
 title: "Hello"
-date: 2023-04-22T13:27:46+08:00
+date: "2023-04-22T14:00:00+08:00"
+type: "post"
 draft: false
 ---
 
-# Hi
+很高兴见到你！
 
-This is nice if you are using `HTTPS`.
+我是 Weleen，一个卑微的研究生。
 
-```go
-func max(a, b int) int {
-    if b > a {
-        return b
-    }
-    return a
-}
-```
+总之这一篇只是用来测试的而已。
+
+就这样啦。

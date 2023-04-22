@@ -2,9 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://erronliu.top/home/categories/</loc>
+    <loc>https://erronliu.top/home/blog/</loc>
+    <lastmod>2023-04-22T17:50:53+08:00</lastmod>
+  </url><url>
+    <loc>https://erronliu.top/home/blog/hello-again/</loc>
+    <lastmod>2023-04-22T17:50:53+08:00</lastmod>
   </url><url>
     <loc>https://erronliu.top/home/</loc>
+    <lastmod>2023-04-22T17:50:53+08:00</lastmod>
+  </url><url>
+    <loc>https://erronliu.top/home/blog/hello/</loc>
+    <lastmod>2023-04-22T13:27:46+08:00</lastmod>
+  </url><url>
+    <loc>https://erronliu.top/home/archives/</loc>
+  </url><url>
+    <loc>https://erronliu.top/home/categories/</loc>
   </url><url>
     <loc>https://erronliu.top/home/tags/</loc>
   </url>

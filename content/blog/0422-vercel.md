@@ -1,5 +1,5 @@
 ---
-title: "【新手向】利用Vercel搭建专属ChatGPT网站"
+title: "【新手向】利用 Vercel 搭建专属 ChatGPT 网站"
 date: "2023-04-22T22:00:00+08:00"
 type: "post"
 draft: false

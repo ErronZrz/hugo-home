@@ -5,7 +5,7 @@ type: "post"
 draft: false
 ---
 
-OpenAI 凭借一己之力开辟了 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
+OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
 
 ![0422-vercel-1](https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/0422-vercel-1.png)
 
@@ -42,7 +42,7 @@ OpenAI 凭借一己之力开辟了 AI 元年，想必大家要么正在使用 Ch
 - `Root Directory` 保持不变。
 - 点击 `Environment Variables`，添加两组环境变量：
   - `OPENAI_API_KEY`，值填入你的 OpenAI API key。
-  - `CODE`，由于 key 的余额是有限的，我们当然不希望别人也能随便使用，所以需要在这里设置访问密码，这里建议大小写字符加数字加特殊符号，保证不被破解，并且支持创建多个密码并用 `,` 隔开，例如 `Abc!123,Xyz@987`。
+  - `CODE`，由于 key 的余额是有限的，我们当然不希望别人也能随便使用，所以需要在这里设置访问密码，这里建议大小写字母、数字和特殊符号组合使用，尽可能降低被破解的可能性。支持创建多个密码并用 `,` 隔开，例如 `Abc!123,Xyz@987`。
 
 万事俱备之后，点击 `Deploy`，Vercel 就会自动帮你编译构建你的网站了。稍事等待即可。
 

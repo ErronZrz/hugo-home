@@ -1,0 +1,5 @@
+baseURL: https://erronliu.top/home/
+languageCode: en-us
+title: My New Hugo Site
+contentDir: /home/erron/hugo-my/content
+publicDir: /home/erron/hugo-my/public

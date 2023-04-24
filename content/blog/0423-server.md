@@ -53,7 +53,7 @@ draft: true
 2. 来到阿里云的[云解析](https://dns.console.aliyun.com/)控制台，对于要解析的域名，点击「解析设置」。
 3. 点击「添加记录」，来添加一条解析记录。
 
-<img src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424214137343.png" alt="image-20230424214137343" style="zoom:50%;" />
+![image-20230424214137343](https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424214137343.png)
 
 这里的「主机记录」一栏指的是域名前缀：
 

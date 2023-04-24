@@ -19,7 +19,7 @@ draft: true
 
 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。
 
-如果有 OpenAI 账号但不知道怎么获取 API key，可以前往[这个页面](https://platform.openai.com/account/api-keys)，点击「Create New Secret Key」按钮来创建。创建 API key 是免费的。
+如果有 OpenAI 账号但不知道怎么获取 API key，可以前往[这个页面](https://platform.openai.com/account/api-keys)，点击「Create new secret key」按钮来创建。创建 API key 是免费的。
 
 ![image-20230424211457511](https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424211457511.png)
 

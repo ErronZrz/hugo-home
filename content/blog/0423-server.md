@@ -211,14 +211,14 @@ curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /
 
 更新软件包列表并安装 Caddy：
 
-```
+```sh
 apt update
 apt install caddy
 ```
 
 验证 Caddy 是否已经正确安装：
 
-```
+```sh
 caddy version
 ```
 
@@ -247,11 +247,116 @@ hugo version
 
 ## Step02 | 搭建 ChatGPT 主站
 
+这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 `https://erronliu.top/`。
 
+这次我们使用的源代码来自于开源仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)，但这里不需要向上次那样 Fork 到自己的仓库，直接使用原作者的仓库即可。
+
+由于我们要通过 Docker 进行**容器化部署**，所以首先拉取作者在 Docker Hub 上的镜像：
+
+```sh
+docker pull chenzhaoyu94/chatgpt-web
+```
+
+接下来，我们创建 Docker Compose 配置文件。首先，自己选择一个存放位置，假如你选择的是 `/home/your_dir/`，那么通过以下命令创建 `docker-compose.yml`：
+
+```sh
+touch /home/your_dir/docker-compose.yml
+```
+
+以 Vim 为例，编辑 `docker-compose.yml`：
+
+```sh
+vim /home/your_dir/docker-compose.yml
+```
+
+向文件中写入以下内容：
+
+```yaml
+version: '3'
+
+services:
+  gpt:
+    image: chenzhaoyu94/chatgpt-web
+    container_name: chatgptweb
+    ports:
+      - 3002:3002
+    environment:
+      AUTH_SECRET_KEY: YOUR_SECRET_KEY
+      OPENAI_API_KEY: YOUR_OPENAI_API_KEY
+```
+
+其中，`gpt` 和 `chatgptweb` 分别是服务名称和容器名称，你也可以换成别的。`3002:3002` 是指将容器的 3002 端口映射到宿主机的 3002 端口。下面的 `AUTH_SECRET_KEY` 填写你想要设置的访问密码，`OPENAI_API_KEY` 则是你的 API key。
+
+当文件修改完成之后，可以通过 Docker Compose 启动 Web 服务：
+
+```sh
+cd /home/your_dir/
+docker-compose up
+```
+
+完成后，查看容器运行状态：
+
+```sh
+docker ps
+```
+
+如果容器正常启动并处于运行状态，你会看见一条 `STATUS` 一列显示已启动多长时间（如 `Up 30s`）且带有你设置的容器名称（如 `chatgptweb`）的记录。
+
+如果这个过程中遇到了错误，可以使用 `docker ps -a` 查看包括启动失败的容器在内的所有容器状况，记下启动失败的容器 ID 或名称（如 `chatgptweb`），查看日志定位问题：
+
+```sh
+docker logs chatgptweb --tail 50
+```
+
+好了，现在容器已经正常运行并**监听来自 3002 端口的 HTTP 请求**，但是你并不能使用自己电脑的浏览器直接访问这个应用，因为防火墙没有开放 3002 端口。接下来，我们利用 Caddy 来**设置反向代理**，并将 HTTP「一键」**升级到 HTTPS**。
+
+Caddy 作为一个 Web 服务器，提供命令行直接启动和通过配置文件启动两种方式，我们选择配置文件，毕竟命令太长的话也会不方便。
+
+检查 Caddy 的配置文件目录下是否已经存在配置文件：
+
+```sh
+cd /etc/caddy/
+ls
+```
+
+如果目录下已经存在一个名为 `Caddyfile` 的文件，就可以直接用，否则需要创建：
+
+```sh
+touch Caddyfile
+```
+
+接下来使用 `vim` 命令编辑 `Caddyfile`，将默认内容（如有）注释掉，并添加如下内容：
+
+```json
+yourdomain.com {
+    tls your_email@example.com
+    reverse_proxy localhost:3002
+}
+```
+
+把 `yourdomain.com` 替换成你的域名，把 `your_email@example.com` 替换成你的邮箱地址。
+
+在这个配置文件中，`tls` 指定了为该域名添加 TLS 证书，Caddy 会替你向 Let's Encrypt 申请免费的证书，有了可信的证书才能够提供 HTTPS 安全访问服务。`reverse_proxy` 则指定了将所有对你的域名的请求反向代理到本机的 3002 端口上，也就是交给你刚刚部署好的以 Docker 容器形式运行的 ChatGPT 应用来进行实际的处理。
+
+修改好配置文件后，启动 Caddy：
+
+```sh
+caddy start
+```
+
+如果 Caddy 的启动出现了报错，可以查看报错原因：
+
+```sh
+systemctl status caddy
+```
+
+Caddy 的启动也没有问题的话，你可以使用浏览器直接访问 `https://yourdomain.com/` 来检查是否反向代理成功。
+
+至此，主站部分就搭建完成了，基于 ChatGPT 的 Web 应用可以直接使用。
 
 ---
 
-## Step03 | 搭建博客与设置反向代理
+## Step03 | 搭建博客
 
 
 

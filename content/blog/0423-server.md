@@ -327,7 +327,7 @@ touch Caddyfile
 
 接下来使用 `vim` 命令编辑 `Caddyfile`，将默认内容（如有）注释掉，并添加如下内容：
 
-```json
+```
 yourdomain.com {
     tls your_email@example.com
     reverse_proxy localhost:3002

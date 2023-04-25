@@ -92,7 +92,7 @@ draft: true
 
 2. 使用以下命令创建一对 SSH 密钥：
 
-    ```
+    ```sh
     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
     ```
 
@@ -108,7 +108,140 @@ draft: true
 
 ## Step01 | 安装所需软件
 
+在开始部署网站之前，我们先进行一些软件包的安装。
 
+本文的命令都是通过 `root` 用户来运行，如果你不想这么做，可以在必要的命令前手动添加 `sudo`。
+
+### Docker
+
+> Docker 是一种应用容器化工具，可以将应用程序及其依赖项打包到 Docker 镜像中，并从镜像创建容器运行。和虚拟机不同的是，容器只为应用程序提供操作系统级别的虚拟，具有体积小、启动速度快的特点。
+>
+> 近几年比较火的「微服务」概念，正是基于以 Docker 为代表的容器化技术。
+
+更新软件包列表：
+
+```sh
+apt update
+```
+
+安装依赖包并允许 apt 通过 HTTPS 使用存储库：
+
+```sh
+apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+```
+
+添加 Docker 的 GPG 密钥：
+
+```sh
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+```
+
+将 Docker 存储库添加到 apt 的源列表中：
+
+```sh
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+```
+
+再次更新软件包列表并安装 Docker：
+
+```sh
+apt update
+apt install docker-ce docker-ce-cli containerd.io
+```
+
+验证 Docker 是否已安装：
+
+```sh
+docker run hello-world
+```
+
+上述命令将下载 `hello-world` 镜像并启动该镜像的一个容器。如果 Docker 正确安装，你会看到一条欢迎消息。
+
+### Docker Compose
+
+> Docker Compose 是一个用于定义和运行多个 Docker 容器的工具，能够方便地管理多个 Docker 应用并确保这些服务以正确的方式进行配置和连接。
+>
+> 提到容器管理/容器编排，可能很多小伙伴会想到 Kubernetes。要注意的是，Kubernetes 是针对于分布式系统中的容器编排而设计的，功能更加强大，配置也要更灵活。如果只是单台主机，Docker Compose 会更合适。
+
+更新软件包列表并安装 Docker-Compose：
+
+```sh
+apt update
+apt install docker-compose
+```
+
+验证 Docker Compose 是否已经正确安装：
+
+```sh
+docker-compose --version
+```
+
+如果 Docker Compose 正确安装，会打印当前的版本号，如 `1.29.2`。
+
+如果上述方法出现问题，可以通过从 Docker 官网手动下载二进制文件再安装的方式：
+
+```sh
+curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+```
+
+上述命令将会从官网下载 1.29.2 版本的 Docker Compose（或者你也可以访问 [Docker Compose Releases](https://github.com/docker/compose/releases) 选择其他版本）的二进制文件，并添加可执行权限。完成后，同样可以使用 `docker-compose --version` 验证安装是否成功。
+
+### Caddy
+
+> Caddy 是一个使用 Go 编写的现代化 Web 服务器，它的特点是开箱即用、安全和自动化。Caddy 提供 [Let's Encrypt](https://letsencrypt.org/zh-cn) TLS 证书的自动获取功能，同时也支持反向代理、负载均衡、WebSocket 等等。
+
+安装存储库相关组件：
+
+```sh
+apt install debian-keyring debian-archive-keyring apt-transport-https
+```
+
+将 Caddy 稳定版的 GPG 密钥导入到系统：
+
+```sh
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+```
+
+将 Caddy 稳定版存储库添加到 apt 的源列表中：
+
+```sh
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
+```
+
+更新软件包列表并安装 Caddy：
+
+```
+apt update
+apt install caddy
+```
+
+验证 Caddy 是否已经正确安装：
+
+```
+caddy version
+```
+
+如果 Caddy 正确安装，会打印当前的版本号，如 `v2.6.4`。
+
+### Hugo
+
+> Hugo 是一个用 Go 编写的静态网站生成器，非常适合通过 markdown 文件来创建个人博客、公司主页等静态站点。
+
+更新软件包列表并安装 Hugo：
+
+```sh
+apt update
+apt install hugo
+```
+
+验证 Hugo 是否已经正确安装：
+
+```sh
+hugo version
+```
+
+如果 Hugo 正确安装，会打印当前的版本号，如 `v0.92.2`。
 
 ---
 

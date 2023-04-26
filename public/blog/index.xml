@@ -6,7 +6,24 @@
     <description>Recent content in Blogs on Weleen Words</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 22 Apr 2023 22:00:00 +0800</lastBuildDate><atom:link href="https://erronliu.top/home/blog/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 23 Apr 2023 13:40:00 +0800</lastBuildDate><atom:link href="https://erronliu.top/home/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【新手向】手把手教你只用一个域名部署多个站点</title>
+      <link>https://erronliu.top/home/blog/0423-server/</link>
+      <pubDate>Sun, 23 Apr 2023 13:40:00 +0800</pubDate>
+      
+      <guid>https://erronliu.top/home/blog/0423-server/</guid>
+      <description>在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
+但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。
+本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。
+ 准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。
+如果有 OpenAI 账号但不知道怎么获取 API key，可以前往这个页面，点击「Create new secret key」按钮来创建。创建 API key 是免费的。
+创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。
+云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。
+配置要求不高，此处列出：
+ 核心数+内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.</description>
+    </item>
+    
     <item>
       <title>【新手向】利用 Vercel 搭建专属 ChatGPT 网站</title>
       <link>https://erronliu.top/home/blog/0422-vercel/</link>

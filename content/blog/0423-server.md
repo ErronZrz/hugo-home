@@ -5,6 +5,8 @@ type: "post"
 draft: true
 ---
 
+{{< toc >}}
+
 在[上篇博客](https://erronliu.top/home/blog/0422-vercel/)中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 有一个相似的仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 [Weleen GPT](https://erronliu.top/)。
 
 但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 `erronliu.top` 下，我部署了我的博客，也就是你现在看到的 [Weleen Words](https://erronliu.top/home/)。
@@ -379,6 +381,8 @@ git init
 git submodule add --depth=1 https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
 git submodule update --init --recursive
 ```
+
+> 在主题有更新时，可以使用 `git submodule update --remote --merge` 命令来获取更新。
 
 接下来，编辑配置文件：
 

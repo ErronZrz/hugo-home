@@ -291,7 +291,7 @@ services:
 
 ```sh
 cd /home/your_dir/
-docker-compose up
+docker-compose up -d
 ```
 
 完成后，查看容器运行状态：
@@ -358,8 +358,199 @@ Caddy 的启动也没有问题的话，你可以使用浏览器直接访问 `htt
 
 ## Step03 | 搭建博客
 
+在上一节我们已经使用 Caddy 将 `yourdomain.com` 代理到 ChatGPT Web 应用，接下来，将 `yourdomain.com/home` 代理到个人博客。
 
+首先，来到你的工作目录（这里以 `/home/sites` 为例），并创建一个新站点：
+
+```sh
+cd /home/sites/
+hugo new site my-site -f yml
+```
+
+这里的 `my-site` 是你的站点名，可以改成你自己喜欢的。
+
+接下来设置主题。
+
+主题设置一般有两种方式，一种是直接 `git clone`，另一种则是使用 Git 的 `submodule` 命令，由于后者更加便于管理，所以我们选择后面一种。以我自己使用的 [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题为例，运行以下命令来初始化 Git 仓库并下载 PaperMod 主题：
+
+```sh
+cd my-site
+git init
+git submodule add --depth=1 https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
+git submodule update --init --recursive
+```
+
+接下来，编辑配置文件：
+
+```sh
+vim config.yml
+```
+
+把内容改为如下所示：
+
+```yaml
+baseURL: https://yourdomain.com/home/
+languageCode: zh-CN
+title: My Blog
+contentDir: ./content
+publicDir: ./public
+theme: PaperMod
+```
+
+其中：
+
+- `baseURL` 是你的博客网站内各个链接的基础 URL，比如说你在首页有一个超链接指向 `/archive` 页面，Hugo 在实际的网站中就会帮你把链接 URL 补全为 `https://yourdomain.com/home/archive`。
+- `languageCode` 是网站的语言代码，因为咱们是中文站点所以用 `zh-CN`，如果你想用英文，就是 `en`。
+- `title` 是你网站的标题，换成你喜欢的就可以。
+- `contentDir` 是存放文本内容的位置，一般是用来存放 markdown 格式的原文。
+- `publicDir` 是存放静态网站的 HTML, CSS, JavaScript 等文件的位置。这个目录的文件你不用管，Hugo 会根据你的文本内容自动生成。
+- `theme` 则是选择想要使用的主题。主题需要位于网站根目录的 `theme` 目录下。
+
+> `contentDir` 的 `./content` 是相对路径。这里不推荐设置为绝对路径，因为在容器中绝对路径将失效。
+>
+> 由于本文介绍的博客搭建方式不依赖 `publicDir` 目录生成的文件，所以也可以不在配置文件中设置 `publicDir`。
+
+配置完成之后，添加一篇文章新文章来查看效果：
+
+```sh
+hugo new posts/hello.md
+vim content/posts/hello.md
+```
+
+随便往这个 markdown 文件中写点什么就好。
+
+试着运行你的 Hugo 站点：
+
+```sh
+hugo server -D
+```
+
+其中，`-D` 参数表示在网站中包含草稿，而草稿是指在 markdown 元数据中具有 `draft: true` 属性的文章。
+
+如果你的网站正常运行，应该会在终端打印 `Web Server is available at http://localhost:1313/` 之类的信息。同样由于你的云服务器没开放 1313 端口，需要使用 Caddy 进行反向代理才能访问。
+
+在此之前，我们需要先停止网站的运行，到 GitHub 上将该网站发布到你的账号下。
+
+来到 GitHub，找到创建新存储库「New Repository」的入口，开始创建仓库。仓库名字随便起，但要注意取消勾选「Add a README file」，也不要选择 `.gitignore` 模板或者许可证，因为这样会导致你的仓库默认有一个提交，从而导致推送失败。
+
+![image-20230426143107841](https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230426143107841.png)
+
+仓库创建完成后，以我的 GitHub 仓库地址 `https://github.com/ErronZrz/hugo-home` 为例，通过以下命令将本次仓库的内容推送到远程仓库：
+
+```sh
+git remote add origin git@github.com/ErronZrz/hugo-home.git
+git add .
+git commit -m "Initial Commit"
+git push -u origin master
+```
+
+> `git@` 开头的地址表示使用 SSH 协议来连接远程仓库，使用 SSH 是因为我们之前是通过 SSH 密钥的方式登录 GitHub 账号的，如果你的云服务器之前登录 GitHub 账号使用的是账号密码，那么用 HTTPS 链接即可。
+
+接下来，我们在 Docker Compose 配置文件中配置 Hugo 镜像：
+
+```sh
+vim /home/your_dir/docker_compose.yml
+```
+
+将文件修改为下面的样子：
+
+```yaml
+version: '3'
+
+services:
+  gpt:
+    image: chenzhaoyu94/chatgpt-web
+    container_name: chatgptweb
+    ports:
+      - 3002:3002
+    environment:
+      AUTH_SECRET_KEY: YOUR_SECRET_KEY
+      OPENAI_API_KEY: YOUR_OPENAI_API_KEY
+
+  hugo:
+    image: klakegg/hugo:0.107.0-ext-ubuntu-onbuild
+    container_name: hugoweb
+    command: server -D --baseURL=https://yourdomain.com/home/ --appendPort=false
+    ports:
+      - 1313:1313
+    volumes:
+      - /home/sites/my-site:/src
+```
+
+同样地，服务名称 `hugo` 和容器名称 `hugoweb` 可以换成别的，`baseURL` 换成自己的域名，`volumes` 下面的前一个目录也要换成你的网站目录。后一个目录 `/src` 是容器内的目录，不用修改。
+
+修改完成后，重新获取镜像并创建和运行容器：
+
+```sh
+docker-compose down
+docker-compose up -d
+```
+
+最后一步，我们需要在 Caddy 中设置反向代理：
+
+```sh
+vim /etc/caddy/Caddyfile
+```
+
+将文件内容修改为：
+
+```
+yourdomain.com {
+    tls your_email@example.com
+    
+    @home path /home/*
+    @nohome not path /home/*
+    
+    reverse_proxy @home localhost:1313
+    reverse_proxy @nohome localhost:3002
+}
+```
+
+其中 `@home` 和 `@nohome` 是命名匹配器。最终，当请求路径以 `/home/` 开头时，将会匹配到 `@home`，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。
+
+> 有关 `Caddyfile` 文件的编写规则，可以前往[这个页面](https://caddy2.dengxiaolong.com/docs/caddyfile)获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 `not @home` 代替 `@nohome` 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。
+
+完成后，重新加载配置文件：
+
+```sh
+caddy reload
+```
+
+如果 Caddy 工作正常，那么你应该能够通过 `https://yourdomain.com/home` 来访问你的博客了。同时，上一部分的 ChatGPT 应用也能正常使用。
 
 ---
 
 ## Step04 | 完善工作流
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

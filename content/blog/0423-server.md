@@ -5,8 +5,6 @@ type: "post"
 draft: true
 ---
 
-{{< toc >}}
-
 在[上篇博客](https://erronliu.top/home/blog/0422-vercel/)中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 有一个相似的仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 [Weleen GPT](https://erronliu.top/)。
 
 但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 `erronliu.top` 下，我部署了我的博客，也就是你现在看到的 [Weleen Words](https://erronliu.top/home/)。
@@ -251,6 +249,8 @@ hugo version
 
 这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 `https://erronliu.top/`。
 
+### 拉取镜像
+
 这次我们使用的源代码来自于开源仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)，但这里不需要向上次那样 Fork 到自己的仓库，直接使用原作者的仓库即可。
 
 由于我们要通过 Docker 进行**容器化部署**，所以首先拉取作者在 Docker Hub 上的镜像：
@@ -258,6 +258,8 @@ hugo version
 ```sh
 docker pull chenzhaoyu94/chatgpt-web
 ```
+
+### 配置 Docker Compose
 
 接下来，我们创建 Docker Compose 配置文件。首先，自己选择一个存放位置，假如你选择的是 `/home/your_dir/`，那么通过以下命令创建 `docker-compose.yml`：
 
@@ -288,6 +290,8 @@ services:
 ```
 
 其中，`gpt` 和 `chatgptweb` 分别是服务名称和容器名称，你也可以换成别的。`3002:3002` 是指将容器的 3002 端口映射到宿主机的 3002 端口。下面的 `AUTH_SECRET_KEY` 填写你想要设置的访问密码，`OPENAI_API_KEY` 则是你的 API key。
+
+### 启动容器并设置反向代理
 
 当文件修改完成之后，可以通过 Docker Compose 启动 Web 服务：
 
@@ -362,6 +366,8 @@ Caddy 的启动也没有问题的话，你可以使用浏览器直接访问 `htt
 
 在上一节我们已经使用 Caddy 将 `yourdomain.com` 代理到 ChatGPT Web 应用，接下来，将 `yourdomain.com/home` 代理到个人博客。
 
+### 创建 Hugo 站点
+
 首先，来到你的工作目录（这里以 `/home/sites` 为例），并创建一个新站点：
 
 ```sh
@@ -414,6 +420,8 @@ theme: PaperMod
 >
 > 由于本文介绍的博客搭建方式不依赖 `publicDir` 目录生成的文件，所以也可以不在配置文件中设置 `publicDir`。
 
+### 将站点推送到 GitHub
+
 配置完成之后，添加一篇文章新文章来查看效果：
 
 ```sh
@@ -449,6 +457,8 @@ git push -u origin master
 ```
 
 > `git@` 开头的地址表示使用 SSH 协议来连接远程仓库，使用 SSH 是因为我们之前是通过 SSH 密钥的方式登录 GitHub 账号的，如果你的云服务器之前登录 GitHub 账号使用的是账号密码，那么用 HTTPS 链接即可。
+
+### 启动容器并设置反向代理
 
 接下来，我们在 Docker Compose 配置文件中配置 Hugo 镜像：
 

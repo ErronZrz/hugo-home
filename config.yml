@@ -1,5 +1,5 @@
 baseURL: https://erronliu.top/home/
-languageCode: zh-cn
+languageCode: zh-CN
 title: Weleen Words
 contentDir: ./content
 publicDir: ./public
@@ -19,3 +19,6 @@ params:
   socialIcons:
     - name: "github"
       url: "https://github.com/ErronZrz"
+  ShowBreadCrumbs: true
+  ShowToc: true
+  ShowCodeCopyButtons: true

@@ -2,7 +2,7 @@
 title: "【新手向】手把手教你只用一个域名部署多个站点"
 date: "2023-04-23T13:40:00+08:00"
 type: "post"
-draft: true
+draft: false
 ---
 
 在[上篇博客](https://erronliu.top/home/blog/0422-vercel/)中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 有一个相似的仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 [Weleen GPT](https://erronliu.top/)。

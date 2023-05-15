@@ -510,19 +510,21 @@ vim /etc/caddy/Caddyfile
 
 ```
 yourdomain.com {
-    tls your_email@example.com
-    
-    @home path /home/*
-    @nohome not path /home/*
-    
-    reverse_proxy @home localhost:1313
-    reverse_proxy @nohome localhost:3002
+	tls your_email@example.com
+
+	@home path /home /home/*
+	@nohome not path /home /home/*
+
+	reverse_proxy @home localhost:1313
+	reverse_proxy @nohome localhost:3002
 }
 ```
 
-其中 `@home` 和 `@nohome` 是命名匹配器。最终，当请求路径以 `/home/` 开头时，将会匹配到 `@home`，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。
+其中 `@home` 和 `@nohome` 是命名匹配器。最终，当请求路径是 `/home`，或者以 `/home/` 开头时，将会匹配到 `@home`，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。
 
 > 有关 `Caddyfile` 文件的编写规则，可以前往[这个页面](https://caddy2.dengxiaolong.com/docs/caddyfile)获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 `not @home` 代替 `@nohome` 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。
+
+> `Caddyfile` 中，推荐使用制表符来完成缩进，而不是使用空格，否则可能会触发 `caddy fmt` 警告。
 
 完成后，重新加载配置文件：
 

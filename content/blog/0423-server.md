@@ -5,7 +5,7 @@ type: "post"
 draft: false
 ---
 
-在[上篇博客](https://erronliu.top/home/blog/0422-vercel/)中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 有一个相似的仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 [Weleen GPT](https://erronliu.top/)。
+在[上篇博客](https://erronliu.top/home/blog/0422-vercel/)中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 助手。机缘巧合之下，我找到所用的源代码仓库 [ChatGPT-Next-Web](https://github.com/Yidadaa/ChatGPT-Next-Web) 有一个相似的仓库 [chatgpt-web](https://github.com/Chanzhaoyu/chatgpt-web)。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 [Weleen GPT](https://erronliu.top/)。
 
 但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 `erronliu.top` 下，我部署了我的博客，也就是你现在看到的 [Weleen Words](https://erronliu.top/home/)。
 
@@ -45,7 +45,7 @@ draft: false
 
 由于本文的目标包括支持 HTTPS，所以需要有一个自己的域名。
 
-非广，但是阿里云的 `.top` 域名首年 9 块钱，确实不算贵，因此本节以阿里云的域名为例，说明怎么把域名解析到云服务器的地址上。
+非广（~~一个普通人正常来说也不会接到商单吧~~），但是阿里云的 `.top` 域名首年 9 块钱，确实不算贵，因此本节以阿里云的域名为例，说明怎么把域名解析到云服务器的地址上。
 
 步骤如下：
 
@@ -96,7 +96,7 @@ draft: false
     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
     ```
 
-    填写你自己的邮件地址即可。过程中会提示 `Enter file in which to save the key`，输入 `~/.ssh/id_rsa`，而至于口令（passphrase），建议留空，不然每次操作仓库都需要输入很麻烦。
+    填写你自己的邮件地址即可。过程中会提示 `Enter file in which to save the key`，输入 `~/.ssh/id_rsa`，而至于口令（passphrase），建议留空，不然每次操作仓库都需要输入一遍会很麻烦。
 
 3. 找到公钥（公钥是具有 `.pub` 扩展名的文件，在上一步中应该有提示存放的目录）的位置，例如 `/some/dir/id_rsa.pub`，使用 `cat /some/dir/id_rsa.pub` 命令打印它，然后复制它的内容，从 `ssh-rsa` 开始，一直复制到邮箱地址。
 

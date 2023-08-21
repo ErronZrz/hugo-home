@@ -450,7 +450,7 @@ hugo server -D
 仓库创建完成后，以我的 GitHub 仓库地址 `https://github.com/ErronZrz/hugo-home` 为例，通过以下命令将本次仓库的内容推送到远程仓库：
 
 ```sh
-git remote add origin git@github.com/ErronZrz/hugo-home.git
+git remote add origin git@github.com:ErronZrz/hugo-home.git
 git add .
 git commit -m "Initial Commit"
 git push -u origin master

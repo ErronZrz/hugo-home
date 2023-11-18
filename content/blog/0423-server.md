@@ -247,8 +247,7 @@ hugo version
 
 ## Step02 | 搭建 ChatGPT 主站
 
-> 2023-11-18 更新：由于 zhile 大佬开发了更牛逼的 [pandora-next](https://github.com/pandora-next/deploy)，我已经转变阵营了，所以现在访问我的主站实际上是 PandoraNext 页面。虽然换了个源，但是部署思路都差不多，而且相关的说明在 README 里面也写得很清楚，我就不另起一篇文章讲解了。
-
+> 2023-11-18 更新：由于 zhile 大佬开发了更牛逼的 [PandoraNext](https://github.com/pandora-next/deploy)，我已经转变阵营了，所以现在访问我的主站看到的实际上是 PandoraNext。虽然换了个源，但是部署思路和下面的内容差不多，而且部署 PandoraNext 的相关的说明作者在 README 里面也写得很清楚，我就不另起一篇文章讲解了（==才不是因为懒得写==）。  
 > [这里](https://github.com/pandora-next/deploy/releases)是 PandoraNext 的二进制文件，支持各种操作系统直接启动，操作比 Docker 更方便。如果仍然想要使用 Docker 部署的话，[这里](https://hub.docker.com/r/pengzhile/pandora-next)是 PandoraNext 的 Docker 镜像地址。
 
 这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 `https://erronliu.top/`。

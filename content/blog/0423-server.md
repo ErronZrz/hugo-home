@@ -247,8 +247,8 @@ hugo version
 
 ## Step02 | 搭建 ChatGPT 主站
 
-> 2023-11-18 更新：由于 zhile 大佬开发了更牛逼的 [PandoraNext](https://github.com/pandora-next/deploy)，我已经转变阵营了，所以现在访问我的主站看到的实际上是 PandoraNext。虽然换了个源，但是部署思路和下面的内容差不多，而且部署 PandoraNext 的相关的说明作者在 README 里面也写得很清楚，我就不另起一篇文章讲解了（==才不是因为懒得写==）。  
-> [这里](https://github.com/pandora-next/deploy/releases)是 PandoraNext 的二进制文件，支持各种操作系统直接启动，操作比 Docker 更方便。如果仍然想要使用 Docker 部署的话，[这里](https://hub.docker.com/r/pengzhile/pandora-next)是 PandoraNext 的 Docker 镜像地址。
+> 2023-11-18 说明：由于 zhile 大佬开发了更牛逼的 [PandoraNext](https://github.com/pandora-next/deploy)，我已经转变阵营了，所以现在访问我的主站看到的实际上是 PandoraNext。虽然换了个源，但是部署思路和下面的内容差不多，而且部署 PandoraNext 的相关的说明作者在 README 里面也写得很清楚，我就不另起一篇文章讲解了（~~才不是因为懒得写~~）。  
+> [这里](https://github.com/pandora-next/deploy/releases)是作者贴心打包好的 PandoraNext 的二进制文件，支持在各种操作系统中直接运行，操作比 Docker 更方便。如果仍然想要使用 Docker 部署的话，[这里](https://hub.docker.com/r/pengzhile/pandora-next)是 PandoraNext 的 Docker 镜像地址。
 
 这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 `https://erronliu.top/`。
 
@@ -336,7 +336,7 @@ touch Caddyfile
 
 接下来使用 `vim` 命令编辑 `Caddyfile`，将默认内容（如有）注释掉，并添加如下内容：
 
-```
+```Caddyfile
 yourdomain.com {
     tls your_email@example.com
     reverse_proxy localhost:3002
@@ -511,23 +511,22 @@ vim /etc/caddy/Caddyfile
 
 将文件内容修改为：
 
-```
+```Caddyfile
 yourdomain.com {
-	tls your_email@example.com
+  tls your_email@example.com
 
-	@home path /home /home/*
-	@nohome not path /home /home/*
+  @home path /home /home/*
+  @nohome not path /home /home/*
 
-	reverse_proxy @home localhost:1313
-	reverse_proxy @nohome localhost:3002
+  reverse_proxy @home localhost:1313
+  reverse_proxy @nohome localhost:3002
 }
 ```
 
 其中 `@home` 和 `@nohome` 是命名匹配器。最终，当请求路径是 `/home`，或者以 `/home/` 开头时，将会匹配到 `@home`，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。
 
-> 有关 `Caddyfile` 文件的编写规则，可以前往[这个页面](https://caddy2.dengxiaolong.com/docs/caddyfile)获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 `not @home` 代替 `@nohome` 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。
-
-> `Caddyfile` 中，推荐使用制表符来完成缩进，而不是使用空格，否则可能会触发 `caddy fmt` 警告。
+> 有关 `Caddyfile` 文件的编写规则，可以前往[这个页面](https://caddy2.dengxiaolong.com/docs/caddyfile)获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 `not @home` 代替 `@nohome` 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。  
+> 顺带一提，在 `Caddyfile` 中，推荐使用制表符来完成缩进，而不是使用空格，否则可能会触发 `caddy fmt` 警告。但是写博客我的代码块里还是会用空格，所以如果复制粘贴的话记得检查一下。
 
 完成后，重新加载配置文件：
 

@@ -347,21 +347,21 @@ func HumanReadableByteCountBinary(num uint64) string {
 }
 
 func fixLargeByteNum(num uint64) uint64 {
-	if num <= 1<<53 {
-		return num
-	}
+    if num <= 1<<53 {
+        return num
+    }
     remainder := num - (num >> 50) << 50
-	val := uint64(float64(num))
-	if uint64(float64(remainder)/float64(1<<50)*20)&1 == 1 {
-		if val < num {
-			num += 1 << 46
-		}
-	} else {
-		if val > num {
-			num -= 1 << 46
-		}
-	}
-	return num
+    val := uint64(float64(num))
+    if uint64(float64(remainder)/float64(1<<50)*20)&1 == 1 {
+        if val < num {
+            num += 1 << 46
+        }
+    } else {
+        if val > num {
+            num -= 1 << 46
+        }
+    }
+    return num
 }
 ```
 
@@ -403,52 +403,23 @@ func HumanReadableByteCountBinary(num uint64) string {
 }
 
 func binaryValueString(num uint64, offset int) string {
-	remainder := num - (num>>offset)<<offset
-	remainderOffset := 60 - offset
-	borders := []int{
-		0x0CC_CCCC_CCCC_CCCC >> remainderOffset,
-		0x266_6666_6666_6666 >> remainderOffset,
-		0x400_0000_0000_0000 >> remainderOffset,
-		0x599_9999_9999_9999 >> remainderOffset,
-		0x733_3333_3333_3333 >> remainderOffset,
-		0x8CC_CCCC_CCCC_CCCC >> remainderOffset,
-		0xA66_6666_6666_6666 >> remainderOffset,
-		0xC00_0000_0000_0000 >> remainderOffset,
-		0xD99_9999_9999_9999 >> remainderOffset,
-		0xF33_3333_3333_3333 >> remainderOffset,
-	}
-	val := sort.SearchInts(borders, int(remainder))
-	intStr := strconv.FormatUint(num>>offset+uint64(val/10), 10)
-	decStr := strconv.FormatUint(uint64(val%10), 10)
-	return intStr + "." + decStr
+    remainder := num - (num>>offset)<<offset
+    remainderOffset := 60 - offset
+    borders := []int{
+        0x0CC_CCCC_CCCC_CCCC >> remainderOffset,
+        0x266_6666_6666_6666 >> remainderOffset,
+        0x400_0000_0000_0000 >> remainderOffset,
+        0x599_9999_9999_9999 >> remainderOffset,
+        0x733_3333_3333_3333 >> remainderOffset,
+        0x8CC_CCCC_CCCC_CCCC >> remainderOffset,
+        0xA66_6666_6666_6666 >> remainderOffset,
+        0xC00_0000_0000_0000 >> remainderOffset,
+        0xD99_9999_9999_9999 >> remainderOffset,
+        0xF33_3333_3333_3333 >> remainderOffset,
+    }
+    val := sort.SearchInts(borders, int(remainder))
+    intStr := strconv.FormatUint(num>>offset+uint64(val/10), 10)
+    decStr := strconv.FormatUint(uint64(val%10), 10)
+    return intStr + "." + decStr
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

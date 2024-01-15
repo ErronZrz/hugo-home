@@ -17,7 +17,7 @@ draft: true
 
 ### 有关参数
 
-函数的参数 `num` 是一个 **64 位无符号**整数，意味着它的值在 $[0,2^{64}-1]$ 区间内，对于该区间内的任何整数，我们都应该能够正确处理。
+函数的参数 `num` 是一个 **64 位无符号整数**，意味着它的值在 $[0,2^{64}-1]$ 区间内，对于该区间内的任何整数，我们都应该能够正确处理。
 
 有小伙伴可能会问：Java 之类没有 64 位无符号整数的语言怎么办？对于有符号的 64 位整数（例如 Java 的 `long`），我们规定非负数正常处理，而负数取绝对值，所以此时的范围区间是 $[0,2^{63}-1]$。
 
@@ -60,7 +60,7 @@ func HumanReadableByteCountSI(num uint64) string
 对于这样一个简单的处理十进制数的问题，聪明的你应该很容易想到解题思路：
 
 1. 首先判断单位，如果是 `B` 则直接返回；
-2. 除以一个单位对应的字节数 $base$，例如让 111,222,333 除以 1 MB 对应的 1,000,000，得到 111.222333；
+2. 除以该单位对应的字节数 $base$，例如让 111,222,333 除以 1 MB 对应的 1,000,000，得到 111.222333；
 3. 保留一位小数，例如从 111.222333 四舍五入到 111.2；
 4. 把数值和单位拼起来并返回，例如 `111.2 MB`。
 
@@ -86,7 +86,7 @@ func HumanReadableByteCountSI(num uint64) string {
 
 ### 四舍五入你干嘛哎哟
 
-然而，`HumanReadableByteCountSI(999_999)` 会是多少呢？它不超过 $10^6$，因此这个函数得到的单位是 `kB`，然后除以 $base$ 得到 999.999 kB，四舍五入之后的返回值就是……`1000.0 kB`。
+然而，`HumanReadableByteCountSI(999_999)` 会是多少呢？它小于 MB 的 $base$ ($10^6$)，因此这个函数得到的单位是 `kB`，除以 kB 的 $base$ 得到 999.999 kB，四舍五入之后的返回值就是……`1000.0 kB`。
 
 不，不该是这样。虽然实际数量离 1 MB 还差一个字节，但单看字符串，`1000.0 kB` 已经达到一个更大的单位 MB，因此正确的返回值是 `1.0 MB`。
 
@@ -161,7 +161,7 @@ func HumanReadableByteCountSI(num uint64) string {
 
 好了，十进制的各路妖孽已经伏诛，二进制还不是手到擒来？
 
-第一步，先把函数签名摆上来：
+第一步，上签名：
 
 ```go
 func HumanReadableByteCountBinary(num uint64) string
@@ -255,8 +255,6 @@ func HumanReadableByteCountBinary(num uint64) string {
 
 言归正传，问题出在哪里？其实我们在十进制里已经讨论过了，原因是浮点数会造成精度丢失。但有意思的是，十进制里面可以通过观察小数点后第二位是否达到 5 来判断要不要进位，而二进制里呢？**想屁吃**。
 
-而且这一次也不能使用之前的找规律的方法。毕竟从 1.05, 1.15, 1.25 一直到 1023.95，一个一个找是不可能的。
-
 或许，**是时候和浮点数正面交锋了**。我们只有搞清楚浮点数到底不精确在哪里，才有可能彻底解决这个问题。
 
 ### 粗糙的精密
@@ -281,7 +279,7 @@ IEEE 754 标准中的 64 位双精度浮点数是由 1 位符号、11 位指数�
 
 如何解决？
 
-聪明的你应该能想到一种方法：分而治之。既然非常大的 `num` 转换为浮点数不准确，那么完全可以把它拆成两部分： `num` 除以 1024 的余数 $r$，以及 $num-r$。$r$ 小于 1024 而 $num-r$ 整除 1024，二者转换为浮点数都是精确的，让它们分别除以 $base$ 再相加，不就精准了？就像下面这样：
+聪明的你应该能想到一种方法：分而治之。既然非常大的 `num` 转换为浮点数不准确，那么完全可以把它拆成两部分： `num` 除以 1024 的余数 $r$，以及 $num-r$。这时，$r$ 小于 1024 而 $num-r$ 被 1024 整除，二者转换为浮点数都是精确的，让它们分别除以 $base$ 再相加，不就精准了？就像下面这样：
 
 ```go
 func HumanReadableByteCountBinary(num uint64) string {
@@ -307,7 +305,7 @@ func HumanReadableByteCountBinary(num uint64) string {
 
 不用浮点数会丢掉余数，用了浮点数又有误差……这么看，好像问题要陷入无解了。
 
-### 浩瀚的奥秘
+### 不安的谜底
 
 回想一下之前是如何解决十进制的 `1024.0 PB` 的？是精确地计算出最终值然后四舍五入吗？不是，恰恰相反，是把 `num` 换成一个**不精确的值**，再去除以 $base$，最后四舍五入。
 
@@ -317,10 +315,140 @@ func HumanReadableByteCountBinary(num uint64) string {
 
 换言之，对于**应该**进位的值，不精确的方向是**更大**，而对于**不应该**进位的值，不精确的方向是**更小**。只要我们自己把握不精确的方向，而不是对浮点数的舍入规则听之任之，就能够顺利解决问题。
 
-最终我们的任务转换为：
+最终我们的任务变为：
 
-1. 判断一个 `num` 转换为 `float64` 的过程是否存在精度损失；
-2. 如果存在精度损失，判断它实际上是否应该进位；
-3. 如果应该进位，让不精确的方向变为更大；否则变为更小。
+1. 判断 `num` 转换为 `float64` 的过程是否存在精度损失；
+2. 如果存在精度损失，判断它实际上**是否应该进位**；
+3. 如果应该进位，让不精确的方向**变为更大**；否则**变为更小**。
 
-但是第 2 步和第 3 步怎么实现？
+第 2 步和第 3 步怎么实现？
+
+**第 2 步**：判断精度损失只需要比较 `num` 和 $2^{53}$，而判断是否应该进位则可以通过计算 $20r\cdot2^{-50}$ 来完成，其中 $r$ 表示 `num` 除以 $2^{50}$ 的余数。这样做的原理是 $[0,0.05)$ 内的数乘以 20 的结果属于 $[0,1)$，而 $[0.05,0.1)$ 内的数乘以 20 的结果属于 $[1,2)$，因此可以通过上面的式子的结果的整数部分的奇偶性，判断是否应该进位。
+
+**第 3 步**：为了避免 `xxx.x5` 附近的数值被划分到 `xxx.x4`，我们可以在第 2 步确认需要进位之后给这个值加上一个偏置，这个偏置可以是 0.1 以内随便一个数，例如 0.05；同理，不该进位的值都减去一个偏置即可。
+
+具体代码如下：
+
+```go
+func HumanReadableByteCountBinary(num uint64) string {
+    if num < 1024 {
+        return strconv.FormatUint(num, 10) + " B"
+    }
+    units := []string{"KiB", "MiB", "GiB", "TiB", "PiB", "EiB"}
+    var i int
+    for offset := 40; offset >= 0 && num > 0xFFF_CCCC_CCCC_CCCC>>offset; offset -= 10 {
+        i++
+    }
+    if i >= 4 {
+        num = fixLargeByteNum(num)
+    }
+    val := float64(num) / math.Pow(1024, float64(i+1))
+    return strconv.FormatFloat(val, 'f', 1, 64) + " " + units[i]
+}
+
+func fixLargeByteNum(num uint64) uint64 {
+	if num <= 1<<53 {
+		return num
+	}
+    remainder := num - (num >> 50) << 50
+	val := uint64(float64(num))
+	if uint64(float64(remainder)/float64(1<<50)*20)&1 == 1 {
+		if val < num {
+			num += 1 << 46
+		}
+	} else {
+		if val > num {
+			num -= 1 << 46
+		}
+	}
+	return num
+}
+```
+
+你拿着新的代码重新测试了一遍，发现之前所有出错的测试用例现在已经全都能顺利通过了。
+
+长舒一口气。
+
+但你随即意识到一个新的问题：`fixLargeByteNum` 函数只针对单位为 `PiB` 的 `num`，那么 `EiB` 呢？例如 1.05 EiB 这个边界能够正常处理吗？
+
+你心想，这不成问题，把代码中的 `50` 都改成 `60` 就好了。
+
+然而很遗憾，此时的 $r$（也就是代码中的 `remainder`）只是小于 $2^{60}$，但不保证小于 $2^{53}$，因此在向 `float64` 转换的路上，最末尾的有效数字无法逃离被吞噬的命运。64 位的浮点数原来这样渺小，在庞大的 `EiB` 面前显得如此苍白无力。
+
+于是我们只好无奈地承认，这条路也宣告失败。
+
+### 浩瀚的奥秘
+
+和浮点数硬碰硬这条路，被彻底堵死。
+
+难道我们真的要屈服于一堆 `xxx.x5` 吗？
+
+慢着……**`xxx.x5`**？翻译翻译，什么 tm 的叫 tm 的 **`xxx.x5`**？
+
+小数点前面的 `xxx` 是整数部分，直接做整数除法就能求出来。而至于后面是 `x5` 还是 `x4`，则关系到了 `x` 是否应该进位。
+
+既然：
+
+```go
+func HumanReadableByteCountBinary(num uint64) string {
+    if num < 1024 {
+        return strconv.FormatUint(num, 10) + " B"
+    }
+    units := []string{"KiB", "MiB", "GiB", "TiB", "PiB", "EiB"}
+    var i int
+    for offset := 40; offset >= 0 && num > 0xFFF_CCCC_CCCC_CCCC>>offset; offset -= 10 {
+        i++
+    }
+    return binaryValueString(num, (i+1)*10) + " " + units[i]
+}
+
+func binaryValueString(num uint64, offset int) string {
+	remainder := num - (num>>offset)<<offset
+	remainderOffset := 60 - offset
+	borders := []int{
+		0x0CC_CCCC_CCCC_CCCC >> remainderOffset,
+		0x266_6666_6666_6666 >> remainderOffset,
+		0x400_0000_0000_0000 >> remainderOffset,
+		0x599_9999_9999_9999 >> remainderOffset,
+		0x733_3333_3333_3333 >> remainderOffset,
+		0x8CC_CCCC_CCCC_CCCC >> remainderOffset,
+		0xA66_6666_6666_6666 >> remainderOffset,
+		0xC00_0000_0000_0000 >> remainderOffset,
+		0xD99_9999_9999_9999 >> remainderOffset,
+		0xF33_3333_3333_3333 >> remainderOffset,
+	}
+	val := sort.SearchInts(borders, int(remainder))
+	intStr := strconv.FormatUint(num>>offset+uint64(val/10), 10)
+	decStr := strconv.FormatUint(uint64(val%10), 10)
+	return intStr + "." + decStr
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

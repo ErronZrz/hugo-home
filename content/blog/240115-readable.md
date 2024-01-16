@@ -417,10 +417,10 @@ func HumanReadableByteCountBinary(num uint64) string {
     for offset := 40; offset >= 0 && num > 0xFFF_CCCC_CCCC_CCCC>>offset; offset -= 10 {
         i++
     }
-    return binaryValueString(num, (i+1)*10) + " " + units[i]
+    return formatQuotient(num, (i+1)*10) + " " + units[i]
 }
 
-func binaryValueString(num uint64, offset int) string {
+func formatQuotient(num uint64, offset int) string {
     intPart := num >> offset
     remainder := num - intPart<<offset
     offset = 60 - offset
@@ -493,10 +493,10 @@ func HumanReadableByteCountBinary(num uint64) string {
     for offset := 40; offset >= 0 && num > 0xFFF_CCCC_CCCC_CCCC>>offset; offset -= 10 {
         i++
     }
-    return binaryValueString(num, (i+1)*10) + " " + units[i]
+    return formatQuotient(num, (i+1)*10) + " " + units[i]
 }
 
-func binaryValueString(num uint64, offset int) string {
+func formatQuotient(num uint64, offset int) string {
     intPart := num >> offset
     remainder := num - intPart<<offset
     offset = 60 - offset

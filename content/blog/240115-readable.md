@@ -186,7 +186,7 @@ func HumanReadableByteCountBinary(num uint64) string
 
 有了 1023.95 的二进制，那么往它的前面每乘以一个 1024，仅仅只需要把二进制的小数点往右挪 10 位就可以。
 
-更具体地说，$\left\lceil1024\times1023.95\right\rceil$ 的十六进制是 `FFFCD`；不小于 $\left\lceil1024^2\times1023.95\right\rceil$ 的十六进制是 `3FFF3334`，它右移 10 位恰好等于 `FFFCC`；$\left\lceil1024^3\times1023.95\right\rceil$ 右移 10 位则恰好等于 `3FFF3333`……
+更具体地说，$\left\lceil1024\times1023.95\right\rceil$ 的十六进制是 `FFFCD`；$\left\lceil1024^2\times1023.95\right\rceil$ 的十六进制是 `3FFF3334`，它右移 10 位恰好等于 `FFFCC`；$\left\lceil1024^3\times1023.95\right\rceil$ 右移 10 位则恰好等于 `3FFF3333`……
 
 也就是说我们得到了一个非常有用的规律：**GiB 的边界右移 10 位刚好等于 MiB 的边界减 1，以此类推**。
 

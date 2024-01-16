@@ -403,7 +403,7 @@ func fixLargeByteNum(num uint64) uint64 {
 | $0.05$ | $0.00\overline{0011}$ | $0.15$ | $0.00\overline{1001}$ | $0.25$ | $0.01$ | $0.35$ | $0.01\overline{0110}$ | $0.45$ | $0.01\overline{1100}$ |
 | $0.55$ | $0.10\overline{0011}$ | $0.65$ | $0.10\overline{1001}$ | $0.75$ | $0.11$ | $0.85$ | $0.11\overline{0110}$ | $0.95$ | $0.11\overline{1100}$ |
 
-这样一来，我们就能够计算 $base_\text{EiB}$ 乘以各种 `0.x5` 的精准边界值，例如 $\left\lceil0.05\cdot base_\text{EiB}\right\rceil-1$ 就等于 `0xCC_CCCC_CCCC_CCCD`。而且这个数不仅适用于最终单位是 EiB 的情况，结合之前找到的规律，它右移 10 位就等于 $\left\lceil0.05\cdot base_\text{PiB}\right\rceil-1$，以此类推。
+这样一来，我们就能够计算 $base_\text{EiB}$ 乘以各种 `0.x5` 的精准边界值，例如 $\left\lceil0.05\cdot base_\text{EiB}\right\rceil-1$ 就等于 `0xCC_CCCC_CCCC_CCCC`。而且这个数不仅适用于最终单位是 EiB 的情况，结合之前找到的规律，它右移 10 位就等于 $\left\lceil0.05\cdot base_\text{PiB}\right\rceil-1$，以此类推。
 
 因此，先计算结果的整数，再通过穷举法计算小数点的后一位，也许真的有可能创造奇迹：
 

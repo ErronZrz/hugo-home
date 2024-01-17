@@ -14,8 +14,10 @@ params:
     imageWidth: 120
     imageHeight: 120
     buttons:
-      - name: Pages
+      - name: Blogs
         url: "/home/blog"
+      - name: Categories
+        url: "/home/categories"
   socialIcons:
     - name: "github"
       url: "https://github.com/ErronZrz"

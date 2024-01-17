@@ -1,9 +1,26 @@
-baseURL: https://erronliu.top/home/
-languageCode: zh-CN
-title: Weleen Words
-contentDir: ./content
-publicDir: ./public
-theme: PaperMod
+baseURL: "https://erronliu.top/home/"
+languageCode: "zh-CN"
+title: "Weleen Words"
+contentDir: "./content"
+publicDir: "./public"
+theme: "PaperMod"
+
+taxonomies:
+  category: "categories"
+  series: "series"
+  tag: "tags"
+
+menus:
+  main:
+  - name: "Home"
+    pageRef: "/"
+    weight: 10
+  - name: "搭个网站"
+    pageRef: "/series/搭个网站"
+    weight: 20
+  - name: "编程杂谈"
+    pageRef: "/series/编程杂谈"
+    weight: 30
 
 params:
   profileMode:
@@ -14,10 +31,8 @@ params:
     imageWidth: 120
     imageHeight: 120
     buttons:
-      - name: Blogs
+      - name: "Blogs"
         url: "/home/blog"
-      - name: Categories
-        url: "/home/categories"
   socialIcons:
     - name: "github"
       url: "https://github.com/ErronZrz"

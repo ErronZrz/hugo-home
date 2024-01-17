@@ -3,6 +3,7 @@ title: "【算法问题】可阅读的字节数"
 date: "2024-01-15T10:10:10+08:00"
 type: "post"
 draft: false
+categories: ["Programming"]
 math: true
 ---
 

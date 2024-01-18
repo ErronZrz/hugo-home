@@ -432,12 +432,12 @@ func formatQuotient(num uint64, offset int) string {
     borders := []int{
         0x0CC_CCCC_CCCC_CCCC >> offset,
         0x266_6666_6666_6666 >> offset,
-        0x400_0000_0000_0000 >> offset,
+        0x3FF_FFFF_FFFF_FFFF >> offset,
         0x599_9999_9999_9999 >> offset,
         0x733_3333_3333_3333 >> offset,
         0x8CC_CCCC_CCCC_CCCC >> offset,
         0xA66_6666_6666_6666 >> offset,
-        0xC00_0000_0000_0000 >> offset,
+        0xBFF_FFFF_FFFF_FFFF >> offset,
         0xD99_9999_9999_9999 >> offset,
         0xF33_3333_3333_3333 >> offset,
     }
@@ -508,12 +508,12 @@ func formatQuotient(num uint64, offset int) string {
     borders := []int{
         0x0CC_CCCC_CCCC_CCCC >> offset,
         0x266_6666_6666_6666 >> offset,
-        0x400_0000_0000_0000 >> offset,
+        0x3FF_FFFF_FFFF_FFFF >> offset,
         0x599_9999_9999_9999 >> offset,
         0x733_3333_3333_3333 >> offset,
         0x8CC_CCCC_CCCC_CCCC >> offset,
         0xA66_6666_6666_6666 >> offset,
-        0xC00_0000_0000_0000 >> offset,
+        0xBFF_FFFF_FFFF_FFFF >> offset,
         0xD99_9999_9999_9999 >> offset,
         0xF33_3333_3333_3333 >> offset,
     }

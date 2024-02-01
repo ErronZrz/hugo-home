@@ -1,4 +1,4 @@
-baseURL: "https://erronliu.top/home/"
+baseURL: "https://home.erronliu.top/"
 languageCode: "zh-CN"
 title: "Weleen Words"
 contentDir: "./content"
@@ -32,7 +32,7 @@ params:
     imageHeight: 120
     buttons:
       - name: "Blogs"
-        url: "/home/blog"
+        url: "/blog"
   socialIcons:
     - name: "github"
       url: "https://github.com/ErronZrz"

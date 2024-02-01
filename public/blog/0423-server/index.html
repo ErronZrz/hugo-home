@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>【新手向】手把手教你只用一个域名部署多个站点 | Weleen Words</title>
-<meta name="keywords" content="">
-<meta name="description" content="在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="robots" content="index, follow" />
+    <title>【新手向】手把手教你只用一个域名部署多个站点 | Weleen Words</title>
+    <meta name="keywords" content="" />
+    <meta
+      name="description"
+      content="在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
 但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。
 本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。
  准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。
@@ -15,57 +20,89 @@
 创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。
 云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。
 配置要求不高，此处列出：
- 核心数&#43;内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.">
-<meta name="author" content="">
-<link rel="canonical" href="https://erronliu.top/home/blog/0423-server/">
-<link crossorigin="anonymous" href="/home/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/home/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://erronliu.top/home/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://erronliu.top/home/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://erronliu.top/home/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://erronliu.top/home/apple-touch-icon.png">
-<link rel="mask-icon" href="https://erronliu.top/home/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
+ 核心数&#43;内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22."
+    />
+    <meta name="author" content="" />
+    <link rel="canonical" href="https://home.erronliu.top/blog/0423-server/" />
+    <link
+      crossorigin="anonymous"
+      href="/home/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css"
+      integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U="
+      rel="preload stylesheet"
+      as="style"
+    />
+    <script
+      defer
+      crossorigin="anonymous"
+      src="/home/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js"
+      integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+      onload="hljs.initHighlightingOnLoad();"
+    ></script>
+    <link rel="icon" href="https://home.erronliu.top/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://home.erronliu.top/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://home.erronliu.top/favicon-32x32.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://home.erronliu.top/apple-touch-icon.png"
+    />
+    <link
+      rel="mask-icon"
+      href="https://home.erronliu.top/safari-pinned-tab.svg"
+    />
+    <meta name="theme-color" content="#2e2e33" />
+    <meta name="msapplication-TileColor" content="#2e2e33" />
+    <noscript>
+      <style>
         #theme-toggle,
         .top-link {
-            display: none;
+          display: none;
         }
-
-    </style>
-    <style>
+      </style>
+      <style>
         @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
+          :root {
+            --theme: rgb(29, 30, 32);
+            --entry: rgb(46, 46, 51);
+            --primary: rgb(218, 218, 219);
+            --secondary: rgb(155, 156, 157);
+            --tertiary: rgb(65, 66, 68);
+            --content: rgb(196, 196, 197);
+            --hljs-bg: rgb(46, 46, 51);
+            --code-bg: rgb(55, 56, 62);
+            --border: rgb(51, 51, 51);
+          }
 
-            .list {
-                background: var(--theme);
-            }
+          .list {
+            background: var(--theme);
+          }
 
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
+          .list:not(.dark)::-webkit-scrollbar-track {
+            background: 0 0;
+          }
 
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
+          .list:not(.dark)::-webkit-scrollbar-thumb {
+            border-color: var(--theme);
+          }
         }
-
-    </style>
-</noscript><meta property="og:title" content="【新手向】手把手教你只用一个域名部署多个站点" />
-<meta property="og:description" content="在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
+      </style>
+    </noscript>
+    <meta
+      property="og:title"
+      content="【新手向】手把手教你只用一个域名部署多个站点"
+    />
+    <meta
+      property="og:description"
+      content="在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
 但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。
 本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。
  准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。
@@ -73,15 +110,31 @@
 创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。
 云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。
 配置要求不高，此处列出：
- 核心数&#43;内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://erronliu.top/home/blog/0423-server/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2023-04-23T13:40:00+08:00" />
-<meta property="article:modified_time" content="2023-04-23T13:40:00+08:00" />
+ 核心数&#43;内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22."
+    />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://home.erronliu.top/blog/0423-server/"
+    />
+    <meta property="article:section" content="blog" />
+    <meta
+      property="article:published_time"
+      content="2023-04-23T13:40:00+08:00"
+    />
+    <meta
+      property="article:modified_time"
+      content="2023-04-23T13:40:00+08:00"
+    />
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【新手向】手把手教你只用一个域名部署多个站点"/>
-<meta name="twitter:description" content="在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="【新手向】手把手教你只用一个域名部署多个站点"
+    />
+    <meta
+      name="twitter:description"
+      content="在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。
 但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。
 本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。
  准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。
@@ -89,332 +142,979 @@
 创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。
 云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。
 配置要求不高，此处列出：
- 核心数&#43;内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22."/>
+ 核心数&#43;内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22."
+    />
 
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Blogs",
+            "item": "https://home.erronliu.top/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "【新手向】手把手教你只用一个域名部署多个站点",
+            "item": "https://home.erronliu.top/blog/0423-server/"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【新手向】手把手教你只用一个域名部署多个站点",
+        "name": "【新手向】手把手教你只用一个域名部署多个站点",
+        "description": "在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。\n但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。\n本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。\n 准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。\n如果有 OpenAI 账号但不知道怎么获取 API key，可以前往这个页面，点击「Create new secret key」按钮来创建。创建 API key 是免费的。\n创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。\n云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。\n配置要求不高，此处列出：\n 核心数+内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.",
+        "keywords": [],
+        "articleBody": "在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。\n但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。\n本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。\n 准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。\n如果有 OpenAI 账号但不知道怎么获取 API key，可以前往这个页面，点击「Create new secret key」按钮来创建。创建 API key 是免费的。\n创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。\n云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。\n配置要求不高，此处列出：\n 核心数+内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.04 LTS 为例进行实操。 IP 地址：由于需要访问 OpenAI，要求服务器是境外的 IP 地址。推荐香港/新加坡，因为便宜。   境外的 IP 地址还有一个额外的优势，就是不需要对域名进行 ICP 备案1，设置好解析就能用。\n 域名及解析 由于本文的目标包括支持 HTTPS，所以需要有一个自己的域名。\n非广，但是阿里云的 .top 域名首年 9 块钱，确实不算贵，因此本节以阿里云的域名为例，说明怎么把域名解析到云服务器的地址上。\n步骤如下：\n 来到阿里云官网，登录。 来到阿里云的云解析控制台，对于要解析的域名，点击「解析设置」。 点击「添加记录」，来添加一条解析记录。  这里的「主机记录」一栏指的是域名前缀：\n 填写 @ 表示直接解析主域名 erronliu.top； 填写 * 表示解析未匹配的所有域名 *.erronliu.top； 填写 www 表示解析 WWW 域名 www.erronliu.top，等等。   如果想要解析多个前缀，可以分多次添加。\n 「记录值」一栏填写你的服务器公网 IP 地址。其他选项保持默认即可。\n添加完成之后，可以去这个网站验证解析是否生效。\n安全规则设置 为了确保云服务器能够正常和外界进行交互，同时保证其他端口的安全，我们需要给云服务器配置安全规则。\n由于不同云服务提供商的设置方式不同，此处不具体说明去哪里设置了，一般来说，可以在云服务器控制台找到「安全组」或者「防火墙」，然后进行设置。\n具体需要放通的端口/协议有：\n 80 端口（可选）：HTTP 默认端口。由于本文是 HTTPS，所以可以不开放，但开着也无妨。 443 端口：HTTPS 默认端口。 22 端口：SSH 远程登录端口，除非你用别的方式登录。 ICMP：ICMP 是网络层协议，它可以保证 Ping 命令的正常工作以及网络中你的主机被正确路由。  登录 GitHub 账号 本文将使用 SSH 的方式登录云服务器，至于要怎么登录，篇幅所限不予介绍，完全不复杂，不知道的话可以自行摸索。\n在登录上云服务器之后，推荐切换到 root 用户进行操作，否则会因为权限不够而无法访问一些文件或者使用 Docker 等等。\n下面介绍怎么在 Linux 上使用 SSH 密钥登录 GitHub 账号，为后续的操作做准备。\n  输入 ls -al ~/.ssh，检查是否已经存在 SSH 密钥。如果发现已经存在名为 id_rsa.pub 或者 id_dsa.pub 的公钥文件，可以直接进入第 3 步。\n  使用以下命令创建一对 SSH 密钥：\nssh-keygen -t rsa -b 4096 -C \"your_email@example.com\" 填写你自己的邮件地址即可。过程中会提示 Enter file in which to save the key，输入 ~/.ssh/id_rsa，而至于口令（passphrase），建议留空，不然每次操作仓库都需要输入很麻烦。\n  找到公钥（公钥是具有 .pub 扩展名的文件，在上一步中应该有提示存放的目录）的位置，例如 /some/dir/id_rsa.pub，使用 cat /some/dir/id_rsa.pub 命令打印它，然后复制它的内容，从 ssh-rsa 开始，一直复制到邮箱地址。\n  使用自己电脑的浏览器访问这个页面，把刚刚的 SSH 公钥粘贴进来即可，密钥的标题可以随便起。\n  添加成功之后，使用 ssh -T git@github.com 命令来测试 SSH 密钥是否正常工作，如果显示的是包含了你 GitHub ID 的欢迎信息，表示你已经成功连接到 GitHub，你在 Linux 当前用户的 ~/.ssh/ 目录下的私钥文件会向 GitHub 表明你的身份。\n   Step01 | 安装所需软件 在开始部署网站之前，我们先进行一些软件包的安装。\n本文的命令都是通过 root 用户来运行，如果你不想这么做，可以在必要的命令前手动添加 sudo。\nDocker  Docker 是一种应用容器化工具，可以将应用程序及其依赖项打包到 Docker 镜像中，并从镜像创建容器运行。和虚拟机不同的是，容器只为应用程序提供操作系统级别的虚拟，具有体积小、启动速度快的特点。\n近几年比较火的「微服务」概念，正是基于以 Docker 为代表的容器化技术。\n 更新软件包列表：\napt update 安装依赖包并允许 apt 通过 HTTPS 使用存储库：\napt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common 添加 Docker 的 GPG 密钥：\ncurl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - 将 Docker 存储库添加到 apt 的源列表中：\nadd-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs)stable\" 再次更新软件包列表并安装 Docker：\napt update apt install docker-ce docker-ce-cli containerd.io 验证 Docker 是否已安装：\ndocker run hello-world 上述命令将下载 hello-world 镜像并启动该镜像的一个容器。如果 Docker 正确安装，你会看到一条欢迎消息。\nDocker Compose  Docker Compose 是一个用于定义和运行多个 Docker 容器的工具，能够方便地管理多个 Docker 应用并确保这些服务以正确的方式进行配置和连接。\n提到容器管理/容器编排，可能很多小伙伴会想到 Kubernetes。要注意的是，Kubernetes 是针对于分布式系统中的容器编排而设计的，功能更加强大，配置也要更灵活。如果只是单台主机，Docker Compose 会更合适。\n 更新软件包列表并安装 Docker-Compose：\napt update apt install docker-compose 验证 Docker Compose 是否已经正确安装：\ndocker-compose --version 如果 Docker Compose 正确安装，会打印当前的版本号，如 1.29.2。\n如果上述方法出现问题，可以通过从 Docker 官网手动下载二进制文件再安装的方式：\ncurl -L \"https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose chmod +x /usr/local/bin/docker-compose 上述命令将会从官网下载 1.29.2 版本的 Docker Compose（或者你也可以访问 Docker Compose Releases 选择其他版本）的二进制文件，并添加可执行权限。完成后，同样可以使用 docker-compose --version 验证安装是否成功。\nCaddy  Caddy 是一个使用 Go 编写的现代化 Web 服务器，它的特点是开箱即用、安全和自动化。Caddy 提供 Let’s Encrypt TLS 证书的自动获取功能，同时也支持反向代理、负载均衡、WebSocket 等等。\n 安装存储库相关组件：\napt install debian-keyring debian-archive-keyring apt-transport-https 将 Caddy 稳定版的 GPG 密钥导入到系统：\ncurl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg 将 Caddy 稳定版存储库添加到 apt 的源列表中：\ncurl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list 更新软件包列表并安装 Caddy：\napt update apt install caddy 验证 Caddy 是否已经正确安装：\ncaddy version 如果 Caddy 正确安装，会打印当前的版本号，如 v2.6.4。\nHugo  Hugo 是一个用 Go 编写的静态网站生成器，非常适合通过 markdown 文件来创建个人博客、公司主页等静态站点。\n 更新软件包列表并安装 Hugo：\napt update apt install hugo 验证 Hugo 是否已经正确安装：\nhugo version 如果 Hugo 正确安装，会打印当前的版本号，如 v0.92.2。\n Step02 | 搭建 ChatGPT 主站 这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 https://erronliu.top/。\n拉取镜像 这次我们使用的源代码来自于开源仓库 chatgpt-web，但这里不需要向上次那样 Fork 到自己的仓库，直接使用原作者的仓库即可。\n由于我们要通过 Docker 进行容器化部署，所以首先拉取作者在 Docker Hub 上的镜像：\ndocker pull chenzhaoyu94/chatgpt-web 配置 Docker Compose 接下来，我们创建 Docker Compose 配置文件。首先，自己选择一个存放位置，假如你选择的是 /home/your_dir/，那么通过以下命令创建 docker-compose.yml：\ntouch /home/your_dir/docker-compose.yml 以 Vim 为例，编辑 docker-compose.yml：\nvim /home/your_dir/docker-compose.yml 向文件中写入以下内容：\nversion: '3' services: gpt: image: chenzhaoyu94/chatgpt-web container_name: chatgptweb ports: - 3002:3002 environment: AUTH_SECRET_KEY: YOUR_SECRET_KEY OPENAI_API_KEY: YOUR_OPENAI_API_KEY 其中，gpt 和 chatgptweb 分别是服务名称和容器名称，你也可以换成别的。3002:3002 是指将容器的 3002 端口映射到宿主机的 3002 端口。下面的 AUTH_SECRET_KEY 填写你想要设置的访问密码，OPENAI_API_KEY 则是你的 API key。\n启动并反向代理 ChatGPT Web 容器 当文件修改完成之后，可以通过 Docker Compose 启动 Web 服务：\ncd /home/your_dir/ docker-compose up -d 完成后，查看容器运行状态：\ndocker ps 如果容器正常启动并处于运行状态，你会看见一条 STATUS 一列显示已启动多长时间（如 Up 30s）且带有你设置的容器名称（如 chatgptweb）的记录。\n如果这个过程中遇到了错误，可以使用 docker ps -a 查看包括启动失败的容器在内的所有容器状况，记下启动失败的容器 ID 或名称（如 chatgptweb），查看日志定位问题：\ndocker logs chatgptweb --tail 50 好了，现在容器已经正常运行并监听来自 3002 端口的 HTTP 请求，但是你并不能使用自己电脑的浏览器直接访问这个应用，因为防火墙没有开放 3002 端口。接下来，我们利用 Caddy 来设置反向代理，并将 HTTP「一键」升级到 HTTPS。\nCaddy 作为一个 Web 服务器，提供命令行直接启动和通过配置文件启动两种方式，我们选择配置文件，毕竟命令太长的话也会不方便。\n检查 Caddy 的配置文件目录下是否已经存在配置文件：\ncd /etc/caddy/ ls 如果目录下已经存在一个名为 Caddyfile 的文件，就可以直接用，否则需要创建：\ntouch Caddyfile 接下来使用 vim 命令编辑 Caddyfile，将默认内容（如有）注释掉，并添加如下内容：\nyourdomain.com { tls your_email@example.com reverse_proxy localhost:3002 } 把 yourdomain.com 替换成你的域名，把 your_email@example.com 替换成你的邮箱地址。\n在这个配置文件中，tls 指定了为该域名添加 TLS 证书，Caddy 会替你向 Let’s Encrypt 申请免费的证书，有了可信的证书才能够提供 HTTPS 安全访问服务。reverse_proxy 则指定了将所有对你的域名的请求反向代理到本机的 3002 端口上，也就是交给你刚刚部署好的以 Docker 容器形式运行的 ChatGPT 应用来进行实际的处理。\n修改好配置文件后，启动 Caddy：\ncaddy start 如果 Caddy 的启动出现了报错，可以查看报错原因：\nsystemctl status caddy Caddy 的启动也没有问题的话，你可以使用浏览器直接访问 https://yourdomain.com/ 来检查是否反向代理成功。\n至此，主站部分就搭建完成了，基于 ChatGPT 的 Web 应用可以直接使用。\n Step03 | 搭建博客 在上一节我们已经使用 Caddy 将 yourdomain.com 代理到 ChatGPT Web 应用，接下来，将 yourdomain.com/home 代理到个人博客。\n创建 Hugo 站点 首先，来到你的工作目录（这里以 /home/sites 为例），并创建一个新站点：\ncd /home/sites/ hugo new site my-site -f yml 这里的 my-site 是你的站点名，可以改成你自己喜欢的。\n接下来设置主题。\n主题设置一般有两种方式，一种是直接 git clone，另一种则是使用 Git 的 submodule 命令，由于后者更加便于管理，所以我们选择后面一种。以我自己使用的 PaperMod 主题为例，运行以下命令来初始化 Git 仓库并下载 PaperMod 主题：\ncd my-site git init git submodule add --depth=1 https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod git submodule update --init --recursive  在主题有更新时，可以使用 git submodule update --remote --merge 命令来获取更新。\n 接下来，编辑配置文件：\nvim config.yml 把内容改为如下所示：\nbaseURL: https://yourdomain.com/home/ languageCode: zh-CN title: My Blog contentDir: ./content publicDir: ./public theme: PaperMod 其中：\n baseURL 是你的博客网站内各个链接的基础 URL，比如说你在首页有一个超链接指向 /archive 页面，Hugo 在实际的网站中就会帮你把链接 URL 补全为 https://yourdomain.com/home/archive。 languageCode 是网站的语言代码，因为咱们是中文站点所以用 zh-CN，如果你想用英文，就是 en。 title 是你网站的标题，换成你喜欢的就可以。 contentDir 是存放文本内容的位置，一般是用来存放 markdown 格式的原文。 publicDir 是存放静态网站的 HTML, CSS, JavaScript 等文件的位置。这个目录的文件你不用管，Hugo 会根据你的文本内容自动生成。 theme 则是选择想要使用的主题。主题需要位于网站根目录的 theme 目录下。   contentDir 的 ./content 是相对路径。这里不推荐设置为绝对路径，因为在容器中绝对路径将失效。\n由于本文介绍的博客搭建方式不依赖 publicDir 目录生成的文件，所以也可以不在配置文件中设置 publicDir。\n 将站点推送到 GitHub 配置完成之后，添加一篇文章新文章来查看效果：\nhugo new posts/hello.md vim content/posts/hello.md 随便往这个 markdown 文件中写点什么就好。\n试着运行你的 Hugo 站点：\nhugo server -D 其中，-D 参数表示在网站中包含草稿，而草稿是指在 markdown 元数据中具有 draft: true 属性的文章。\n如果你的网站正常运行，应该会在终端打印 Web Server is available at http://localhost:1313/ 之类的信息。同样由于你的云服务器没开放 1313 端口，需要使用 Caddy 进行反向代理才能访问。\n在此之前，我们需要先停止网站的运行，到 GitHub 上将该网站发布到你的账号下。\n来到 GitHub，找到创建新存储库「New Repository」的入口，开始创建仓库。仓库名字随便起，但要注意取消勾选「Add a README file」，也不要选择 .gitignore 模板或者许可证，因为这样会导致你的仓库默认有一个提交，从而导致推送失败。\n仓库创建完成后，以我的 GitHub 仓库地址 https://github.com/ErronZrz/hugo-home 为例，通过以下命令将本次仓库的内容推送到远程仓库：\ngit remote add origin git@github.com/ErronZrz/hugo-home.git git add . git commit -m \"Initial Commit\" git push -u origin master  git@ 开头的地址表示使用 SSH 协议来连接远程仓库，使用 SSH 是因为我们之前是通过 SSH 密钥的方式登录 GitHub 账号的，如果你的云服务器之前登录 GitHub 账号使用的是账号密码，那么用 HTTPS 链接即可。\n 启动并反向代理 Hugo 容器 接下来，我们在 Docker Compose 配置文件中配置 Hugo 镜像：\nvim /home/your_dir/docker_compose.yml 将文件修改为下面的样子：\nversion: '3' services: gpt: image: chenzhaoyu94/chatgpt-web container_name: chatgptweb ports: - 3002:3002 environment: AUTH_SECRET_KEY: YOUR_SECRET_KEY OPENAI_API_KEY: YOUR_OPENAI_API_KEY hugo: image: klakegg/hugo:0.107.0-ext-ubuntu-onbuild container_name: hugoweb command: server -D --baseURL=https://yourdomain.com/home/ --appendPort=false ports: - 1313:1313 volumes: - /home/sites/my-site:/src 同样地，服务名称 hugo 和容器名称 hugoweb 可以换成别的，baseURL 换成自己的域名，volumes 下面的前一个目录也要换成你的网站目录。后一个目录 /src 是容器内的目录，不用修改。\n修改完成后，重新获取镜像并创建和运行容器：\ndocker-compose down docker-compose up -d 最后一步，我们需要在 Caddy 中设置反向代理：\nvim /etc/caddy/Caddyfile 将文件内容修改为：\nyourdomain.com { tls your_email@example.com @home path /home/* @nohome not path /home/* reverse_proxy @home localhost:1313 reverse_proxy @nohome localhost:3002 } 其中 @home 和 @nohome 是命名匹配器。最终，当请求路径以 /home/ 开头时，将会匹配到 @home，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。\n 有关 Caddyfile 文件的编写规则，可以前往这个页面获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 not @home 代替 @nohome 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。\n 完成后，重新加载配置文件：\ncaddy reload 如果 Caddy 工作正常，那么你应该能够通过 https://yourdomain.com/home 来访问你的博客了。同时，上一部分的 ChatGPT 应用也能正常使用。\n 结语 感谢能读到这里，相信你也已经搭建起了你自己的个人网站了吧😎。\n搭建好之后，你就可以在任何地方编辑博客，并且通过 GitHub 同步到你的服务器上。每当你的服务器使用 git pull 拉取到有新的内容，容器的磁盘空间也会相应更新，这时会触发 Hugo 的自动热重载，你就能够在保持容器运行的情况下查看到博客内容的更新了。\n不过貌似还有更加省事的方式，甚至可以不用 Git 来同步，可以自行摸索。\n并且如果你想要进一步提升博客网站在外观上的逼格，也可以参考所使用的主题的配置说明，或是前往 Docker 容器内部直接修改网页样式。\n本篇就聊到这儿。886。\n  根据 《互联网信息服务管理办法》以及 《非经营性互联网信息服务备案管理办法》，国家对非经营性互联网信息服务实行备案制度，对经营性互联网信息服务实行许可制度。未取得许可或者未履行 ICP 备案手续的，不得从事互联网信息服务。 ↩︎\n   ",
+        "wordCount": "957",
+        "inLanguage": "en",
+        "datePublished": "2023-04-23T13:40:00+08:00",
+        "dateModified": "2023-04-23T13:40:00+08:00",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://home.erronliu.top/blog/0423-server/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Weleen Words",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://home.erronliu.top/favicon.ico"
+          }
+        }
+      }
+    </script>
+  </head>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Blogs",
-      "item": "https://erronliu.top/home/blog/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "【新手向】手把手教你只用一个域名部署多个站点",
-      "item": "https://erronliu.top/home/blog/0423-server/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "【新手向】手把手教你只用一个域名部署多个站点",
-  "name": "【新手向】手把手教你只用一个域名部署多个站点",
-  "description": "在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。\n但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。\n本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。\n 准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。\n如果有 OpenAI 账号但不知道怎么获取 API key，可以前往这个页面，点击「Create new secret key」按钮来创建。创建 API key 是免费的。\n创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。\n云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。\n配置要求不高，此处列出：\n 核心数+内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.",
-  "keywords": [
-    
-  ],
-  "articleBody": "在上篇博客中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 ChatGPT-Next-Web 有一个相似的仓库 chatgpt-web。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 Weleen GPT。\n但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 erronliu.top 下，我部署了我的博客，也就是你现在看到的 Weleen Words。\n本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。\n 准备工作 OpenAI API key 首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。\n如果有 OpenAI 账号但不知道怎么获取 API key，可以前往这个页面，点击「Create new secret key」按钮来创建。创建 API key 是免费的。\n创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。\n云服务器 要自由地部署网站，当然不能寄人篱下（指 GitHub Pages 以及上一篇提到的 Vercel 等等），而是要拥有一台属于自己的云服务器才行。\n配置要求不高，此处列出：\n 核心数+内存：完全没要求，单核 1G 即可。 硬盘：理论上 20GB 就够用了，但推荐 40GB 以上（话说现在的服务器应该都是这个数起步来着）。 带宽：能联网就行。 操作系统：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.04 LTS 为例进行实操。 IP 地址：由于需要访问 OpenAI，要求服务器是境外的 IP 地址。推荐香港/新加坡，因为便宜。   境外的 IP 地址还有一个额外的优势，就是不需要对域名进行 ICP 备案1，设置好解析就能用。\n 域名及解析 由于本文的目标包括支持 HTTPS，所以需要有一个自己的域名。\n非广，但是阿里云的 .top 域名首年 9 块钱，确实不算贵，因此本节以阿里云的域名为例，说明怎么把域名解析到云服务器的地址上。\n步骤如下：\n 来到阿里云官网，登录。 来到阿里云的云解析控制台，对于要解析的域名，点击「解析设置」。 点击「添加记录」，来添加一条解析记录。  这里的「主机记录」一栏指的是域名前缀：\n 填写 @ 表示直接解析主域名 erronliu.top； 填写 * 表示解析未匹配的所有域名 *.erronliu.top； 填写 www 表示解析 WWW 域名 www.erronliu.top，等等。   如果想要解析多个前缀，可以分多次添加。\n 「记录值」一栏填写你的服务器公网 IP 地址。其他选项保持默认即可。\n添加完成之后，可以去这个网站验证解析是否生效。\n安全规则设置 为了确保云服务器能够正常和外界进行交互，同时保证其他端口的安全，我们需要给云服务器配置安全规则。\n由于不同云服务提供商的设置方式不同，此处不具体说明去哪里设置了，一般来说，可以在云服务器控制台找到「安全组」或者「防火墙」，然后进行设置。\n具体需要放通的端口/协议有：\n 80 端口（可选）：HTTP 默认端口。由于本文是 HTTPS，所以可以不开放，但开着也无妨。 443 端口：HTTPS 默认端口。 22 端口：SSH 远程登录端口，除非你用别的方式登录。 ICMP：ICMP 是网络层协议，它可以保证 Ping 命令的正常工作以及网络中你的主机被正确路由。  登录 GitHub 账号 本文将使用 SSH 的方式登录云服务器，至于要怎么登录，篇幅所限不予介绍，完全不复杂，不知道的话可以自行摸索。\n在登录上云服务器之后，推荐切换到 root 用户进行操作，否则会因为权限不够而无法访问一些文件或者使用 Docker 等等。\n下面介绍怎么在 Linux 上使用 SSH 密钥登录 GitHub 账号，为后续的操作做准备。\n  输入 ls -al ~/.ssh，检查是否已经存在 SSH 密钥。如果发现已经存在名为 id_rsa.pub 或者 id_dsa.pub 的公钥文件，可以直接进入第 3 步。\n  使用以下命令创建一对 SSH 密钥：\nssh-keygen -t rsa -b 4096 -C \"your_email@example.com\" 填写你自己的邮件地址即可。过程中会提示 Enter file in which to save the key，输入 ~/.ssh/id_rsa，而至于口令（passphrase），建议留空，不然每次操作仓库都需要输入很麻烦。\n  找到公钥（公钥是具有 .pub 扩展名的文件，在上一步中应该有提示存放的目录）的位置，例如 /some/dir/id_rsa.pub，使用 cat /some/dir/id_rsa.pub 命令打印它，然后复制它的内容，从 ssh-rsa 开始，一直复制到邮箱地址。\n  使用自己电脑的浏览器访问这个页面，把刚刚的 SSH 公钥粘贴进来即可，密钥的标题可以随便起。\n  添加成功之后，使用 ssh -T git@github.com 命令来测试 SSH 密钥是否正常工作，如果显示的是包含了你 GitHub ID 的欢迎信息，表示你已经成功连接到 GitHub，你在 Linux 当前用户的 ~/.ssh/ 目录下的私钥文件会向 GitHub 表明你的身份。\n   Step01 | 安装所需软件 在开始部署网站之前，我们先进行一些软件包的安装。\n本文的命令都是通过 root 用户来运行，如果你不想这么做，可以在必要的命令前手动添加 sudo。\nDocker  Docker 是一种应用容器化工具，可以将应用程序及其依赖项打包到 Docker 镜像中，并从镜像创建容器运行。和虚拟机不同的是，容器只为应用程序提供操作系统级别的虚拟，具有体积小、启动速度快的特点。\n近几年比较火的「微服务」概念，正是基于以 Docker 为代表的容器化技术。\n 更新软件包列表：\napt update 安装依赖包并允许 apt 通过 HTTPS 使用存储库：\napt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common 添加 Docker 的 GPG 密钥：\ncurl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - 将 Docker 存储库添加到 apt 的源列表中：\nadd-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs)stable\" 再次更新软件包列表并安装 Docker：\napt update apt install docker-ce docker-ce-cli containerd.io 验证 Docker 是否已安装：\ndocker run hello-world 上述命令将下载 hello-world 镜像并启动该镜像的一个容器。如果 Docker 正确安装，你会看到一条欢迎消息。\nDocker Compose  Docker Compose 是一个用于定义和运行多个 Docker 容器的工具，能够方便地管理多个 Docker 应用并确保这些服务以正确的方式进行配置和连接。\n提到容器管理/容器编排，可能很多小伙伴会想到 Kubernetes。要注意的是，Kubernetes 是针对于分布式系统中的容器编排而设计的，功能更加强大，配置也要更灵活。如果只是单台主机，Docker Compose 会更合适。\n 更新软件包列表并安装 Docker-Compose：\napt update apt install docker-compose 验证 Docker Compose 是否已经正确安装：\ndocker-compose --version 如果 Docker Compose 正确安装，会打印当前的版本号，如 1.29.2。\n如果上述方法出现问题，可以通过从 Docker 官网手动下载二进制文件再安装的方式：\ncurl -L \"https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose chmod +x /usr/local/bin/docker-compose 上述命令将会从官网下载 1.29.2 版本的 Docker Compose（或者你也可以访问 Docker Compose Releases 选择其他版本）的二进制文件，并添加可执行权限。完成后，同样可以使用 docker-compose --version 验证安装是否成功。\nCaddy  Caddy 是一个使用 Go 编写的现代化 Web 服务器，它的特点是开箱即用、安全和自动化。Caddy 提供 Let’s Encrypt TLS 证书的自动获取功能，同时也支持反向代理、负载均衡、WebSocket 等等。\n 安装存储库相关组件：\napt install debian-keyring debian-archive-keyring apt-transport-https 将 Caddy 稳定版的 GPG 密钥导入到系统：\ncurl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg 将 Caddy 稳定版存储库添加到 apt 的源列表中：\ncurl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list 更新软件包列表并安装 Caddy：\napt update apt install caddy 验证 Caddy 是否已经正确安装：\ncaddy version 如果 Caddy 正确安装，会打印当前的版本号，如 v2.6.4。\nHugo  Hugo 是一个用 Go 编写的静态网站生成器，非常适合通过 markdown 文件来创建个人博客、公司主页等静态站点。\n 更新软件包列表并安装 Hugo：\napt update apt install hugo 验证 Hugo 是否已经正确安装：\nhugo version 如果 Hugo 正确安装，会打印当前的版本号，如 v0.92.2。\n Step02 | 搭建 ChatGPT 主站 这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 https://erronliu.top/。\n拉取镜像 这次我们使用的源代码来自于开源仓库 chatgpt-web，但这里不需要向上次那样 Fork 到自己的仓库，直接使用原作者的仓库即可。\n由于我们要通过 Docker 进行容器化部署，所以首先拉取作者在 Docker Hub 上的镜像：\ndocker pull chenzhaoyu94/chatgpt-web 配置 Docker Compose 接下来，我们创建 Docker Compose 配置文件。首先，自己选择一个存放位置，假如你选择的是 /home/your_dir/，那么通过以下命令创建 docker-compose.yml：\ntouch /home/your_dir/docker-compose.yml 以 Vim 为例，编辑 docker-compose.yml：\nvim /home/your_dir/docker-compose.yml 向文件中写入以下内容：\nversion: '3' services: gpt: image: chenzhaoyu94/chatgpt-web container_name: chatgptweb ports: - 3002:3002 environment: AUTH_SECRET_KEY: YOUR_SECRET_KEY OPENAI_API_KEY: YOUR_OPENAI_API_KEY 其中，gpt 和 chatgptweb 分别是服务名称和容器名称，你也可以换成别的。3002:3002 是指将容器的 3002 端口映射到宿主机的 3002 端口。下面的 AUTH_SECRET_KEY 填写你想要设置的访问密码，OPENAI_API_KEY 则是你的 API key。\n启动并反向代理 ChatGPT Web 容器 当文件修改完成之后，可以通过 Docker Compose 启动 Web 服务：\ncd /home/your_dir/ docker-compose up -d 完成后，查看容器运行状态：\ndocker ps 如果容器正常启动并处于运行状态，你会看见一条 STATUS 一列显示已启动多长时间（如 Up 30s）且带有你设置的容器名称（如 chatgptweb）的记录。\n如果这个过程中遇到了错误，可以使用 docker ps -a 查看包括启动失败的容器在内的所有容器状况，记下启动失败的容器 ID 或名称（如 chatgptweb），查看日志定位问题：\ndocker logs chatgptweb --tail 50 好了，现在容器已经正常运行并监听来自 3002 端口的 HTTP 请求，但是你并不能使用自己电脑的浏览器直接访问这个应用，因为防火墙没有开放 3002 端口。接下来，我们利用 Caddy 来设置反向代理，并将 HTTP「一键」升级到 HTTPS。\nCaddy 作为一个 Web 服务器，提供命令行直接启动和通过配置文件启动两种方式，我们选择配置文件，毕竟命令太长的话也会不方便。\n检查 Caddy 的配置文件目录下是否已经存在配置文件：\ncd /etc/caddy/ ls 如果目录下已经存在一个名为 Caddyfile 的文件，就可以直接用，否则需要创建：\ntouch Caddyfile 接下来使用 vim 命令编辑 Caddyfile，将默认内容（如有）注释掉，并添加如下内容：\nyourdomain.com { tls your_email@example.com reverse_proxy localhost:3002 } 把 yourdomain.com 替换成你的域名，把 your_email@example.com 替换成你的邮箱地址。\n在这个配置文件中，tls 指定了为该域名添加 TLS 证书，Caddy 会替你向 Let’s Encrypt 申请免费的证书，有了可信的证书才能够提供 HTTPS 安全访问服务。reverse_proxy 则指定了将所有对你的域名的请求反向代理到本机的 3002 端口上，也就是交给你刚刚部署好的以 Docker 容器形式运行的 ChatGPT 应用来进行实际的处理。\n修改好配置文件后，启动 Caddy：\ncaddy start 如果 Caddy 的启动出现了报错，可以查看报错原因：\nsystemctl status caddy Caddy 的启动也没有问题的话，你可以使用浏览器直接访问 https://yourdomain.com/ 来检查是否反向代理成功。\n至此，主站部分就搭建完成了，基于 ChatGPT 的 Web 应用可以直接使用。\n Step03 | 搭建博客 在上一节我们已经使用 Caddy 将 yourdomain.com 代理到 ChatGPT Web 应用，接下来，将 yourdomain.com/home 代理到个人博客。\n创建 Hugo 站点 首先，来到你的工作目录（这里以 /home/sites 为例），并创建一个新站点：\ncd /home/sites/ hugo new site my-site -f yml 这里的 my-site 是你的站点名，可以改成你自己喜欢的。\n接下来设置主题。\n主题设置一般有两种方式，一种是直接 git clone，另一种则是使用 Git 的 submodule 命令，由于后者更加便于管理，所以我们选择后面一种。以我自己使用的 PaperMod 主题为例，运行以下命令来初始化 Git 仓库并下载 PaperMod 主题：\ncd my-site git init git submodule add --depth=1 https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod git submodule update --init --recursive  在主题有更新时，可以使用 git submodule update --remote --merge 命令来获取更新。\n 接下来，编辑配置文件：\nvim config.yml 把内容改为如下所示：\nbaseURL: https://yourdomain.com/home/ languageCode: zh-CN title: My Blog contentDir: ./content publicDir: ./public theme: PaperMod 其中：\n baseURL 是你的博客网站内各个链接的基础 URL，比如说你在首页有一个超链接指向 /archive 页面，Hugo 在实际的网站中就会帮你把链接 URL 补全为 https://yourdomain.com/home/archive。 languageCode 是网站的语言代码，因为咱们是中文站点所以用 zh-CN，如果你想用英文，就是 en。 title 是你网站的标题，换成你喜欢的就可以。 contentDir 是存放文本内容的位置，一般是用来存放 markdown 格式的原文。 publicDir 是存放静态网站的 HTML, CSS, JavaScript 等文件的位置。这个目录的文件你不用管，Hugo 会根据你的文本内容自动生成。 theme 则是选择想要使用的主题。主题需要位于网站根目录的 theme 目录下。   contentDir 的 ./content 是相对路径。这里不推荐设置为绝对路径，因为在容器中绝对路径将失效。\n由于本文介绍的博客搭建方式不依赖 publicDir 目录生成的文件，所以也可以不在配置文件中设置 publicDir。\n 将站点推送到 GitHub 配置完成之后，添加一篇文章新文章来查看效果：\nhugo new posts/hello.md vim content/posts/hello.md 随便往这个 markdown 文件中写点什么就好。\n试着运行你的 Hugo 站点：\nhugo server -D 其中，-D 参数表示在网站中包含草稿，而草稿是指在 markdown 元数据中具有 draft: true 属性的文章。\n如果你的网站正常运行，应该会在终端打印 Web Server is available at http://localhost:1313/ 之类的信息。同样由于你的云服务器没开放 1313 端口，需要使用 Caddy 进行反向代理才能访问。\n在此之前，我们需要先停止网站的运行，到 GitHub 上将该网站发布到你的账号下。\n来到 GitHub，找到创建新存储库「New Repository」的入口，开始创建仓库。仓库名字随便起，但要注意取消勾选「Add a README file」，也不要选择 .gitignore 模板或者许可证，因为这样会导致你的仓库默认有一个提交，从而导致推送失败。\n仓库创建完成后，以我的 GitHub 仓库地址 https://github.com/ErronZrz/hugo-home 为例，通过以下命令将本次仓库的内容推送到远程仓库：\ngit remote add origin git@github.com/ErronZrz/hugo-home.git git add . git commit -m \"Initial Commit\" git push -u origin master  git@ 开头的地址表示使用 SSH 协议来连接远程仓库，使用 SSH 是因为我们之前是通过 SSH 密钥的方式登录 GitHub 账号的，如果你的云服务器之前登录 GitHub 账号使用的是账号密码，那么用 HTTPS 链接即可。\n 启动并反向代理 Hugo 容器 接下来，我们在 Docker Compose 配置文件中配置 Hugo 镜像：\nvim /home/your_dir/docker_compose.yml 将文件修改为下面的样子：\nversion: '3' services: gpt: image: chenzhaoyu94/chatgpt-web container_name: chatgptweb ports: - 3002:3002 environment: AUTH_SECRET_KEY: YOUR_SECRET_KEY OPENAI_API_KEY: YOUR_OPENAI_API_KEY hugo: image: klakegg/hugo:0.107.0-ext-ubuntu-onbuild container_name: hugoweb command: server -D --baseURL=https://yourdomain.com/home/ --appendPort=false ports: - 1313:1313 volumes: - /home/sites/my-site:/src 同样地，服务名称 hugo 和容器名称 hugoweb 可以换成别的，baseURL 换成自己的域名，volumes 下面的前一个目录也要换成你的网站目录。后一个目录 /src 是容器内的目录，不用修改。\n修改完成后，重新获取镜像并创建和运行容器：\ndocker-compose down docker-compose up -d 最后一步，我们需要在 Caddy 中设置反向代理：\nvim /etc/caddy/Caddyfile 将文件内容修改为：\nyourdomain.com { tls your_email@example.com @home path /home/* @nohome not path /home/* reverse_proxy @home localhost:1313 reverse_proxy @nohome localhost:3002 } 其中 @home 和 @nohome 是命名匹配器。最终，当请求路径以 /home/ 开头时，将会匹配到 @home，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。\n 有关 Caddyfile 文件的编写规则，可以前往这个页面获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 not @home 代替 @nohome 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。\n 完成后，重新加载配置文件：\ncaddy reload 如果 Caddy 工作正常，那么你应该能够通过 https://yourdomain.com/home 来访问你的博客了。同时，上一部分的 ChatGPT 应用也能正常使用。\n 结语 感谢能读到这里，相信你也已经搭建起了你自己的个人网站了吧😎。\n搭建好之后，你就可以在任何地方编辑博客，并且通过 GitHub 同步到你的服务器上。每当你的服务器使用 git pull 拉取到有新的内容，容器的磁盘空间也会相应更新，这时会触发 Hugo 的自动热重载，你就能够在保持容器运行的情况下查看到博客内容的更新了。\n不过貌似还有更加省事的方式，甚至可以不用 Git 来同步，可以自行摸索。\n并且如果你想要进一步提升博客网站在外观上的逼格，也可以参考所使用的主题的配置说明，或是前往 Docker 容器内部直接修改网页样式。\n本篇就聊到这儿。886。\n  根据 《互联网信息服务管理办法》以及 《非经营性互联网信息服务备案管理办法》，国家对非经营性互联网信息服务实行备案制度，对经营性互联网信息服务实行许可制度。未取得许可或者未履行 ICP 备案手续的，不得从事互联网信息服务。 ↩︎\n   ",
-  "wordCount" : "957",
-  "inLanguage": "en",
-  "datePublished": "2023-04-23T13:40:00+08:00",
-  "dateModified": "2023-04-23T13:40:00+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://erronliu.top/home/blog/0423-server/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Weleen Words",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://erronliu.top/home/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
+  <body class="" id="top">
+    <script>
+      if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add("dark");
+      } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove("dark");
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.body.classList.add("dark");
+      }
+    </script>
 
-<body class="" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
+    <header class="header">
+      <nav class="nav">
         <div class="logo">
-            <a href="https://erronliu.top/home/" accesskey="h" title="Weleen Words (Alt + H)">Weleen Words</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
+          <a
+            href="https://home.erronliu.top/"
+            accesskey="h"
+            title="Weleen Words (Alt + H)"
+            >Weleen Words</a
+          >
+          <div class="logo-switches">
+            <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+              <svg
+                id="moon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                ></path>
+              </svg>
+              <svg
+                id="sun"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <ul id="menu"></ul>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <div class="breadcrumbs">
+            <a href="https://home.erronliu.top/">Home</a>&nbsp;»&nbsp;<a
+              href="https://home.erronliu.top/blog/"
+              >Blogs</a
+            >
+          </div>
+          <h1 class="post-title">
+            【新手向】手把手教你只用一个域名部署多个站点
+          </h1>
+          <div class="post-meta">
+            <span title="2023-04-23 13:40:00 +0800 CST">April 23, 2023</span>
+          </div>
+        </header>
+        <div class="toc">
+          <details>
+            <summary accesskey="c" title="(Alt + C)">
+              <span class="details">Table of Contents</span>
+            </summary>
+
+            <div class="inner">
+              <ul>
+                <li>
+                  <a
+                    href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c"
+                    aria-label="准备工作"
+                    >准备工作</a
+                  >
+                  <ul>
+                    <li>
+                      <a href="#openai-api-key" aria-label="OpenAI API key"
+                        >OpenAI API key</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e4%ba%91%e6%9c%8d%e5%8a%a1%e5%99%a8"
+                        aria-label="云服务器"
+                        >云服务器</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e5%9f%9f%e5%90%8d%e5%8f%8a%e8%a7%a3%e6%9e%90"
+                        aria-label="域名及解析"
+                        >域名及解析</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e5%ae%89%e5%85%a8%e8%a7%84%e5%88%99%e8%ae%be%e7%bd%ae"
+                        aria-label="安全规则设置"
+                        >安全规则设置</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e7%99%bb%e5%bd%95-github-%e8%b4%a6%e5%8f%b7"
+                        aria-label="登录 GitHub 账号"
+                        >登录 GitHub 账号</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a
+                    href="#step01--%e5%ae%89%e8%a3%85%e6%89%80%e9%9c%80%e8%bd%af%e4%bb%b6"
+                    aria-label="Step01 | 安装所需软件"
+                    >Step01 | 安装所需软件</a
+                  >
+                  <ul>
+                    <li>
+                      <a href="#docker" aria-label="Docker">Docker</a>
+                    </li>
+                    <li>
+                      <a href="#docker-compose" aria-label="Docker Compose"
+                        >Docker Compose</a
+                      >
+                    </li>
+                    <li>
+                      <a href="#caddy" aria-label="Caddy">Caddy</a>
+                    </li>
+                    <li>
+                      <a href="#hugo" aria-label="Hugo">Hugo</a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a
+                    href="#step02--%e6%90%ad%e5%bb%ba-chatgpt-%e4%b8%bb%e7%ab%99"
+                    aria-label="Step02 | 搭建 ChatGPT 主站"
+                    >Step02 | 搭建 ChatGPT 主站</a
+                  >
+                  <ul>
+                    <li>
+                      <a
+                        href="#%e6%8b%89%e5%8f%96%e9%95%9c%e5%83%8f"
+                        aria-label="拉取镜像"
+                        >拉取镜像</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e9%85%8d%e7%bd%ae-docker-compose"
+                        aria-label="配置 Docker Compose"
+                        >配置 Docker Compose</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e5%90%af%e5%8a%a8%e5%b9%b6%e5%8f%8d%e5%90%91%e4%bb%a3%e7%90%86-chatgpt-web-%e5%ae%b9%e5%99%a8"
+                        aria-label="启动并反向代理 ChatGPT Web 容器"
+                        >启动并反向代理 ChatGPT Web 容器</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a
+                    href="#step03--%e6%90%ad%e5%bb%ba%e5%8d%9a%e5%ae%a2"
+                    aria-label="Step03 | 搭建博客"
+                    >Step03 | 搭建博客</a
+                  >
+                  <ul>
+                    <li>
+                      <a
+                        href="#%e5%88%9b%e5%bb%ba-hugo-%e7%ab%99%e7%82%b9"
+                        aria-label="创建 Hugo 站点"
+                        >创建 Hugo 站点</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e5%b0%86%e7%ab%99%e7%82%b9%e6%8e%a8%e9%80%81%e5%88%b0-github"
+                        aria-label="将站点推送到 GitHub"
+                        >将站点推送到 GitHub</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="#%e5%90%af%e5%8a%a8%e5%b9%b6%e5%8f%8d%e5%90%91%e4%bb%a3%e7%90%86-hugo-%e5%ae%b9%e5%99%a8"
+                        aria-label="启动并反向代理 Hugo 容器"
+                        >启动并反向代理 Hugo 容器</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#%e7%bb%93%e8%af%ad" aria-label="结语">结语</a>
+                </li>
+              </ul>
             </div>
+          </details>
         </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
 
-<article class="post-single">
-  <header class="post-header">
-    <div class="breadcrumbs"><a href="https://erronliu.top/home/">Home</a>&nbsp;»&nbsp;<a href="https://erronliu.top/home/blog/">Blogs</a></div>
-    <h1 class="post-title">
-      【新手向】手把手教你只用一个域名部署多个站点
-    </h1>
-    <div class="post-meta"><span title='2023-04-23 13:40:00 +0800 CST'>April 23, 2023</span>
-
-</div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
-                <li>
-                    <a href="#%e5%87%86%e5%a4%87%e5%b7%a5%e4%bd%9c" aria-label="准备工作">准备工作</a><ul>
-                        
-                <li>
-                    <a href="#openai-api-key" aria-label="OpenAI API key">OpenAI API key</a></li>
-                <li>
-                    <a href="#%e4%ba%91%e6%9c%8d%e5%8a%a1%e5%99%a8" aria-label="云服务器">云服务器</a></li>
-                <li>
-                    <a href="#%e5%9f%9f%e5%90%8d%e5%8f%8a%e8%a7%a3%e6%9e%90" aria-label="域名及解析">域名及解析</a></li>
-                <li>
-                    <a href="#%e5%ae%89%e5%85%a8%e8%a7%84%e5%88%99%e8%ae%be%e7%bd%ae" aria-label="安全规则设置">安全规则设置</a></li>
-                <li>
-                    <a href="#%e7%99%bb%e5%bd%95-github-%e8%b4%a6%e5%8f%b7" aria-label="登录 GitHub 账号">登录 GitHub 账号</a></li></ul>
-                </li>
-                <li>
-                    <a href="#step01--%e5%ae%89%e8%a3%85%e6%89%80%e9%9c%80%e8%bd%af%e4%bb%b6" aria-label="Step01 | 安装所需软件">Step01 | 安装所需软件</a><ul>
-                        
-                <li>
-                    <a href="#docker" aria-label="Docker">Docker</a></li>
-                <li>
-                    <a href="#docker-compose" aria-label="Docker Compose">Docker Compose</a></li>
-                <li>
-                    <a href="#caddy" aria-label="Caddy">Caddy</a></li>
-                <li>
-                    <a href="#hugo" aria-label="Hugo">Hugo</a></li></ul>
-                </li>
-                <li>
-                    <a href="#step02--%e6%90%ad%e5%bb%ba-chatgpt-%e4%b8%bb%e7%ab%99" aria-label="Step02 | 搭建 ChatGPT 主站">Step02 | 搭建 ChatGPT 主站</a><ul>
-                        
-                <li>
-                    <a href="#%e6%8b%89%e5%8f%96%e9%95%9c%e5%83%8f" aria-label="拉取镜像">拉取镜像</a></li>
-                <li>
-                    <a href="#%e9%85%8d%e7%bd%ae-docker-compose" aria-label="配置 Docker Compose">配置 Docker Compose</a></li>
-                <li>
-                    <a href="#%e5%90%af%e5%8a%a8%e5%b9%b6%e5%8f%8d%e5%90%91%e4%bb%a3%e7%90%86-chatgpt-web-%e5%ae%b9%e5%99%a8" aria-label="启动并反向代理 ChatGPT Web 容器">启动并反向代理 ChatGPT Web 容器</a></li></ul>
-                </li>
-                <li>
-                    <a href="#step03--%e6%90%ad%e5%bb%ba%e5%8d%9a%e5%ae%a2" aria-label="Step03 | 搭建博客">Step03 | 搭建博客</a><ul>
-                        
-                <li>
-                    <a href="#%e5%88%9b%e5%bb%ba-hugo-%e7%ab%99%e7%82%b9" aria-label="创建 Hugo 站点">创建 Hugo 站点</a></li>
-                <li>
-                    <a href="#%e5%b0%86%e7%ab%99%e7%82%b9%e6%8e%a8%e9%80%81%e5%88%b0-github" aria-label="将站点推送到 GitHub">将站点推送到 GitHub</a></li>
-                <li>
-                    <a href="#%e5%90%af%e5%8a%a8%e5%b9%b6%e5%8f%8d%e5%90%91%e4%bb%a3%e7%90%86-hugo-%e5%ae%b9%e5%99%a8" aria-label="启动并反向代理 Hugo 容器">启动并反向代理 Hugo 容器</a></li></ul>
-                </li>
-                <li>
-                    <a href="#%e7%bb%93%e8%af%ad" aria-label="结语">结语</a>
-                </li>
-            </ul>
-        </div>
-    </details>
-</div>
-
-  <div class="post-content"><p>在<a href="https://erronliu.top/home/blog/0422-vercel/">上篇博客</a>中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT 机器人。机缘巧合之下，我找到所用的源代码仓库 <a href="https://github.com/Yidadaa/ChatGPT-Next-Web">ChatGPT-Next-Web</a> 有一个相似的仓库 <a href="https://github.com/Chanzhaoyu/chatgpt-web">chatgpt-web</a>。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步 <a href="https://erronliu.top/">Weleen GPT</a>。</p>
-<p>但我只有这一个域名，要是把域名给了 AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名 <code>erronliu.top</code> 下，我部署了我的博客，也就是你现在看到的 <a href="https://erronliu.top/home/">Weleen Words</a>。</p>
-<p>本篇就以我的个人网站为例，讲解如何利用 Caddy 实现用一个域名将请求代理到不同站点的效果。</p>
-<hr>
-<h2 id="准备工作">准备工作<a hidden class="anchor" aria-hidden="true" href="#准备工作">#</a></h2>
-<h3 id="openai-api-key">OpenAI API key<a hidden class="anchor" aria-hidden="true" href="#openai-api-key">#</a></h3>
-<p>首先，你需要有一个 OpenAI API key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI 的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API 额度，一般是 5 美元，但是存在有效期，过期没用完的话，赠送的额度会失效。</p>
-<p>如果有 OpenAI 账号但不知道怎么获取 API key，可以前往<a href="https://platform.openai.com/account/api-keys">这个页面</a>，点击「Create new secret key」按钮来创建。创建 API key 是免费的。</p>
-<p><img loading="lazy" src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424211457511.png" alt="image-20230424211457511"  />
-</p>
-<p>创建好的 key 需要妥善保管，因为 OpenAI 不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。</p>
-<h3 id="云服务器">云服务器<a hidden class="anchor" aria-hidden="true" href="#云服务器">#</a></h3>
-<p>要自由地部署网站，当然不能寄人篱下（指 <a href="https://pages.github.com/">GitHub Pages</a> 以及上一篇提到的 <a href="https://vercel.com/">Vercel</a> 等等），而是要拥有一台属于自己的云服务器才行。</p>
-<p>配置要求不高，此处列出：</p>
-<ul>
-<li><strong>核心数+内存</strong>：完全没要求，单核 1G 即可。</li>
-<li><strong>硬盘</strong>：理论上 20GB 就够用了，但推荐 40GB 以上（<del>话说现在的服务器应该都是这个数起步来着</del>）。</li>
-<li><strong>带宽</strong>：能联网就行。</li>
-<li><strong>操作系统</strong>：都行，不是太老的 Linux 发行版都能用，但本文以 Ubuntu 22.04 LTS 为例进行实操。</li>
-<li><strong>IP 地址</strong>：由于需要访问 OpenAI，要求服务器是<strong>境外</strong>的 IP 地址。推荐香港/新加坡，因为便宜。</li>
-</ul>
-<blockquote>
-<p>境外的 IP 地址还有一个额外的优势，就是不需要对域名进行 ICP 备案<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>，设置好解析就能用。</p>
-</blockquote>
-<h3 id="域名及解析">域名及解析<a hidden class="anchor" aria-hidden="true" href="#域名及解析">#</a></h3>
-<p>由于本文的目标包括支持 HTTPS，所以需要有一个自己的域名。</p>
-<p>非广，但是阿里云的 <code>.top</code> 域名首年 9 块钱，确实不算贵，因此本节以阿里云的域名为例，说明怎么把域名解析到云服务器的地址上。</p>
-<p>步骤如下：</p>
-<ol>
-<li>来到<a href="https://www.aliyun.com/">阿里云官网</a>，登录。</li>
-<li>来到阿里云的<a href="https://dns.console.aliyun.com/">云解析</a>控制台，对于要解析的域名，点击「解析设置」。</li>
-<li>点击「添加记录」，来添加一条解析记录。</li>
-</ol>
-<p><img loading="lazy" src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424214137343.png" alt="image-20230424214137343"  />
-</p>
-<p>这里的「主机记录」一栏指的是域名前缀：</p>
-<ul>
-<li>填写 <code>@</code> 表示直接解析主域名 <code>erronliu.top</code>；</li>
-<li>填写 <code>*</code> 表示解析未匹配的所有域名 <code>*.erronliu.top</code>；</li>
-<li>填写 <code>www</code> 表示解析 WWW 域名 <code>www.erronliu.top</code>，等等。</li>
-</ul>
-<blockquote>
-<p>如果想要解析多个前缀，可以分多次添加。</p>
-</blockquote>
-<p>「记录值」一栏填写你的服务器公网 IP 地址。其他选项保持默认即可。</p>
-<p>添加完成之后，可以去<a href="https://tool.chinaz.com/dns">这个网站</a>验证解析是否生效。</p>
-<h3 id="安全规则设置">安全规则设置<a hidden class="anchor" aria-hidden="true" href="#安全规则设置">#</a></h3>
-<p>为了确保云服务器能够正常和外界进行交互，同时保证其他端口的安全，我们需要给云服务器配置安全规则。</p>
-<p>由于不同云服务提供商的设置方式不同，此处不具体说明去哪里设置了，一般来说，可以在云服务器控制台找到「安全组」或者「防火墙」，然后进行设置。</p>
-<p>具体需要放通的端口/协议有：</p>
-<ul>
-<li><strong>80 端口</strong>（可选）：HTTP 默认端口。由于本文是 HTTPS，所以可以不开放，但开着也无妨。</li>
-<li><strong>443 端口</strong>：HTTPS 默认端口。</li>
-<li><strong>22 端口</strong>：SSH 远程登录端口，除非你用别的方式登录。</li>
-<li><strong>ICMP</strong>：ICMP 是网络层协议，它可以保证 Ping 命令的正常工作以及网络中你的主机被正确路由。</li>
-</ul>
-<h3 id="登录-github-账号">登录 GitHub 账号<a hidden class="anchor" aria-hidden="true" href="#登录-github-账号">#</a></h3>
-<p>本文将使用 SSH 的方式登录云服务器，至于要怎么登录，篇幅所限不予介绍，完全不复杂，不知道的话可以自行摸索。</p>
-<p>在登录上云服务器之后，推荐切换到 <code>root</code> 用户进行操作，否则会因为权限不够而无法访问一些文件或者使用 Docker 等等。</p>
-<p>下面介绍怎么在 Linux 上使用 SSH 密钥登录 GitHub 账号，为后续的操作做准备。</p>
-<ol>
-<li>
-<p>输入 <code>ls -al ~/.ssh</code>，检查是否已经存在 SSH 密钥。如果发现已经存在名为 <code>id_rsa.pub</code> 或者 <code>id_dsa.pub</code> 的公钥文件，可以直接进入第 3 步。</p>
-</li>
-<li>
-<p>使用以下命令创建一对 SSH 密钥：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">ssh-keygen -t rsa -b <span style="color:#ae81ff">4096</span> -C <span style="color:#e6db74">&#34;your_email@example.com&#34;</span>
-</code></pre></div><p>填写你自己的邮件地址即可。过程中会提示 <code>Enter file in which to save the key</code>，输入 <code>~/.ssh/id_rsa</code>，而至于口令（passphrase），建议留空，不然每次操作仓库都需要输入很麻烦。</p>
-</li>
-<li>
-<p>找到公钥（公钥是具有 <code>.pub</code> 扩展名的文件，在上一步中应该有提示存放的目录）的位置，例如 <code>/some/dir/id_rsa.pub</code>，使用 <code>cat /some/dir/id_rsa.pub</code> 命令打印它，然后复制它的内容，从 <code>ssh-rsa</code> 开始，一直复制到邮箱地址。</p>
-</li>
-<li>
-<p>使用自己电脑的浏览器访问<a href="https://github.com/settings/ssh/new">这个页面</a>，把刚刚的 SSH 公钥粘贴进来即可，密钥的标题可以随便起。</p>
-</li>
-<li>
-<p>添加成功之后，使用 <code>ssh -T git@github.com</code> 命令来测试 SSH 密钥是否正常工作，如果显示的是包含了你 GitHub ID 的欢迎信息，表示你已经成功连接到 GitHub，你在 Linux 当前用户的 <code>~/.ssh/</code> 目录下的私钥文件会向 GitHub 表明你的身份。</p>
-</li>
-</ol>
-<hr>
-<h2 id="step01--安装所需软件">Step01 | 安装所需软件<a hidden class="anchor" aria-hidden="true" href="#step01--安装所需软件">#</a></h2>
-<p>在开始部署网站之前，我们先进行一些软件包的安装。</p>
-<p>本文的命令都是通过 <code>root</code> 用户来运行，如果你不想这么做，可以在必要的命令前手动添加 <code>sudo</code>。</p>
-<h3 id="docker">Docker<a hidden class="anchor" aria-hidden="true" href="#docker">#</a></h3>
-<blockquote>
-<p>Docker 是一种应用容器化工具，可以将应用程序及其依赖项打包到 Docker 镜像中，并从镜像创建容器运行。和虚拟机不同的是，容器只为应用程序提供操作系统级别的虚拟，具有体积小、启动速度快的特点。</p>
-<p>近几年比较火的「微服务」概念，正是基于以 Docker 为代表的容器化技术。</p>
-</blockquote>
-<p>更新软件包列表：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt update
-</code></pre></div><p>安装依赖包并允许 apt 通过 HTTPS 使用存储库：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-</code></pre></div><p>添加 Docker 的 GPG 密钥：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-</code></pre></div><p>将 Docker 存储库添加到 apt 的源列表中：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">add-apt-repository <span style="color:#e6db74">&#34;deb [arch=amd64] https://download.docker.com/linux/ubuntu </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> stable&#34;</span>
-</code></pre></div><p>再次更新软件包列表并安装 Docker：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt update
+        <div class="post-content">
+          <p>
+            在<a href="https://home.erronliu.top/blog/0422-vercel/">上篇博客</a
+            >中，我介绍了如何在利用 Vercel 提供的服务搭建一个专属的 ChatGPT
+            机器人。机缘巧合之下，我找到所用的源代码仓库
+            <a href="https://github.com/Yidadaa/ChatGPT-Next-Web"
+              >ChatGPT-Next-Web</a
+            >
+            有一个相似的仓库
+            <a href="https://github.com/Chanzhaoyu/chatgpt-web">chatgpt-web</a
+            >。实测发现后者对移动端兼容性更好，所以把它给部署到了我的云服务器上。效果可以移步
+            <a href="https://erronliu.top/">Weleen GPT</a>。
+          </p>
+          <p>
+            但我只有这一个域名，要是把域名给了
+            AI，那博客不就没法用了？好在经过一番摸索，也找到了解决方法，最终，在同一个域名
+            <code>erronliu.top</code> 下，我部署了我的博客，也就是你现在看到的
+            <a href="https://home.erronliu.top/">Weleen Words</a>。
+          </p>
+          <p>
+            本篇就以我的个人网站为例，讲解如何利用 Caddy
+            实现用一个域名将请求代理到不同站点的效果。
+          </p>
+          <hr />
+          <h2 id="准备工作">
+            准备工作<a hidden class="anchor" aria-hidden="true" href="#准备工作"
+              >#</a
+            >
+          </h2>
+          <h3 id="openai-api-key">
+            OpenAI API key<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#openai-api-key"
+              >#</a
+            >
+          </h3>
+          <p>
+            首先，你需要有一个 OpenAI API
+            key（一个很长的字符串，类似于软件的许可证密钥），不然没法调用 OpenAI
+            的 API 来获取回答。只要有 OpenAI 账号，官方就会赠送免费的 API
+            额度，一般是 5
+            美元，但是存在有效期，过期没用完的话，赠送的额度会失效。
+          </p>
+          <p>
+            如果有 OpenAI 账号但不知道怎么获取 API key，可以前往<a
+              href="https://platform.openai.com/account/api-keys"
+              >这个页面</a
+            >，点击「Create new secret key」按钮来创建。创建 API key 是免费的。
+          </p>
+          <p>
+            <img
+              loading="lazy"
+              src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424211457511.png"
+              alt="image-20230424211457511"
+            />
+          </p>
+          <p>
+            创建好的 key 需要妥善保管，因为 OpenAI
+            不提供第二次查看。当然，旧的过期了找不回来的话，也可以选择删除并创建新的。
+          </p>
+          <h3 id="云服务器">
+            云服务器<a hidden class="anchor" aria-hidden="true" href="#云服务器"
+              >#</a
+            >
+          </h3>
+          <p>
+            要自由地部署网站，当然不能寄人篱下（指
+            <a href="https://pages.github.com/">GitHub Pages</a>
+            以及上一篇提到的
+            <a href="https://vercel.com/">Vercel</a>
+            等等），而是要拥有一台属于自己的云服务器才行。
+          </p>
+          <p>配置要求不高，此处列出：</p>
+          <ul>
+            <li><strong>核心数+内存</strong>：完全没要求，单核 1G 即可。</li>
+            <li>
+              <strong>硬盘</strong>：理论上 20GB 就够用了，但推荐 40GB
+              以上（<del>话说现在的服务器应该都是这个数起步来着</del>）。
+            </li>
+            <li><strong>带宽</strong>：能联网就行。</li>
+            <li>
+              <strong>操作系统</strong>：都行，不是太老的 Linux
+              发行版都能用，但本文以 Ubuntu 22.04 LTS 为例进行实操。
+            </li>
+            <li>
+              <strong>IP 地址</strong>：由于需要访问
+              OpenAI，要求服务器是<strong>境外</strong>的 IP
+              地址。推荐香港/新加坡，因为便宜。
+            </li>
+          </ul>
+          <blockquote>
+            <p>
+              境外的 IP 地址还有一个额外的优势，就是不需要对域名进行 ICP
+              备案<sup id="fnref:1"
+                ><a href="#fn:1" class="footnote-ref" role="doc-noteref"
+                  >1</a
+                ></sup
+              >，设置好解析就能用。
+            </p>
+          </blockquote>
+          <h3 id="域名及解析">
+            域名及解析<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#域名及解析"
+              >#</a
+            >
+          </h3>
+          <p>由于本文的目标包括支持 HTTPS，所以需要有一个自己的域名。</p>
+          <p>
+            非广，但是阿里云的 <code>.top</code> 域名首年 9
+            块钱，确实不算贵，因此本节以阿里云的域名为例，说明怎么把域名解析到云服务器的地址上。
+          </p>
+          <p>步骤如下：</p>
+          <ol>
+            <li>
+              来到<a href="https://www.aliyun.com/">阿里云官网</a>，登录。
+            </li>
+            <li>
+              来到阿里云的<a href="https://dns.console.aliyun.com/">云解析</a
+              >控制台，对于要解析的域名，点击「解析设置」。
+            </li>
+            <li>点击「添加记录」，来添加一条解析记录。</li>
+          </ol>
+          <p>
+            <img
+              loading="lazy"
+              src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230424214137343.png"
+              alt="image-20230424214137343"
+            />
+          </p>
+          <p>这里的「主机记录」一栏指的是域名前缀：</p>
+          <ul>
+            <li>
+              填写 <code>@</code> 表示直接解析主域名 <code>erronliu.top</code>；
+            </li>
+            <li>
+              填写 <code>*</code> 表示解析未匹配的所有域名
+              <code>*.erronliu.top</code>；
+            </li>
+            <li>
+              填写 <code>www</code> 表示解析 WWW 域名
+              <code>www.erronliu.top</code>，等等。
+            </li>
+          </ul>
+          <blockquote>
+            <p>如果想要解析多个前缀，可以分多次添加。</p>
+          </blockquote>
+          <p>
+            「记录值」一栏填写你的服务器公网 IP 地址。其他选项保持默认即可。
+          </p>
+          <p>
+            添加完成之后，可以去<a href="https://tool.chinaz.com/dns"
+              >这个网站</a
+            >验证解析是否生效。
+          </p>
+          <h3 id="安全规则设置">
+            安全规则设置<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#安全规则设置"
+              >#</a
+            >
+          </h3>
+          <p>
+            为了确保云服务器能够正常和外界进行交互，同时保证其他端口的安全，我们需要给云服务器配置安全规则。
+          </p>
+          <p>
+            由于不同云服务提供商的设置方式不同，此处不具体说明去哪里设置了，一般来说，可以在云服务器控制台找到「安全组」或者「防火墙」，然后进行设置。
+          </p>
+          <p>具体需要放通的端口/协议有：</p>
+          <ul>
+            <li>
+              <strong>80 端口</strong>（可选）：HTTP 默认端口。由于本文是
+              HTTPS，所以可以不开放，但开着也无妨。
+            </li>
+            <li><strong>443 端口</strong>：HTTPS 默认端口。</li>
+            <li>
+              <strong>22 端口</strong>：SSH 远程登录端口，除非你用别的方式登录。
+            </li>
+            <li>
+              <strong>ICMP</strong>：ICMP 是网络层协议，它可以保证 Ping
+              命令的正常工作以及网络中你的主机被正确路由。
+            </li>
+          </ul>
+          <h3 id="登录-github-账号">
+            登录 GitHub 账号<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#登录-github-账号"
+              >#</a
+            >
+          </h3>
+          <p>
+            本文将使用 SSH
+            的方式登录云服务器，至于要怎么登录，篇幅所限不予介绍，完全不复杂，不知道的话可以自行摸索。
+          </p>
+          <p>
+            在登录上云服务器之后，推荐切换到
+            <code>root</code>
+            用户进行操作，否则会因为权限不够而无法访问一些文件或者使用 Docker
+            等等。
+          </p>
+          <p>
+            下面介绍怎么在 Linux 上使用 SSH 密钥登录 GitHub
+            账号，为后续的操作做准备。
+          </p>
+          <ol>
+            <li>
+              <p>
+                输入 <code>ls -al ~/.ssh</code>，检查是否已经存在 SSH
+                密钥。如果发现已经存在名为 <code>id_rsa.pub</code> 或者
+                <code>id_dsa.pub</code> 的公钥文件，可以直接进入第 3 步。
+              </p>
+            </li>
+            <li>
+              <p>使用以下命令创建一对 SSH 密钥：</p>
+              <div class="highlight">
+                <pre
+                  tabindex="0"
+                  style="
+                    color: #f8f8f2;
+                    background-color: #272822;
+                    -moz-tab-size: 4;
+                    -o-tab-size: 4;
+                    tab-size: 4;
+                  "
+                ><code class="language-sh" data-lang="sh">ssh-keygen -t rsa -b <span style="color:#ae81ff">4096</span> -C <span style="color:#e6db74">&#34;your_email@example.com&#34;</span>
+</code></pre>
+              </div>
+              <p>
+                填写你自己的邮件地址即可。过程中会提示
+                <code>Enter file in which to save the key</code>，输入
+                <code>~/.ssh/id_rsa</code
+                >，而至于口令（passphrase），建议留空，不然每次操作仓库都需要输入很麻烦。
+              </p>
+            </li>
+            <li>
+              <p>
+                找到公钥（公钥是具有
+                <code>.pub</code>
+                扩展名的文件，在上一步中应该有提示存放的目录）的位置，例如
+                <code>/some/dir/id_rsa.pub</code>，使用
+                <code>cat /some/dir/id_rsa.pub</code>
+                命令打印它，然后复制它的内容，从
+                <code>ssh-rsa</code> 开始，一直复制到邮箱地址。
+              </p>
+            </li>
+            <li>
+              <p>
+                使用自己电脑的浏览器访问<a
+                  href="https://github.com/settings/ssh/new"
+                  >这个页面</a
+                >，把刚刚的 SSH 公钥粘贴进来即可，密钥的标题可以随便起。
+              </p>
+            </li>
+            <li>
+              <p>
+                添加成功之后，使用 <code>ssh -T git@github.com</code> 命令来测试
+                SSH 密钥是否正常工作，如果显示的是包含了你 GitHub ID
+                的欢迎信息，表示你已经成功连接到 GitHub，你在 Linux 当前用户的
+                <code>~/.ssh/</code> 目录下的私钥文件会向 GitHub 表明你的身份。
+              </p>
+            </li>
+          </ol>
+          <hr />
+          <h2 id="step01--安装所需软件">
+            Step01 | 安装所需软件<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#step01--安装所需软件"
+              >#</a
+            >
+          </h2>
+          <p>在开始部署网站之前，我们先进行一些软件包的安装。</p>
+          <p>
+            本文的命令都是通过
+            <code>root</code>
+            用户来运行，如果你不想这么做，可以在必要的命令前手动添加
+            <code>sudo</code>。
+          </p>
+          <h3 id="docker">
+            Docker<a hidden class="anchor" aria-hidden="true" href="#docker"
+              >#</a
+            >
+          </h3>
+          <blockquote>
+            <p>
+              Docker 是一种应用容器化工具，可以将应用程序及其依赖项打包到 Docker
+              镜像中，并从镜像创建容器运行。和虚拟机不同的是，容器只为应用程序提供操作系统级别的虚拟，具有体积小、启动速度快的特点。
+            </p>
+            <p>
+              近几年比较火的「微服务」概念，正是基于以 Docker
+              为代表的容器化技术。
+            </p>
+          </blockquote>
+          <p>更新软件包列表：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt update
+</code></pre>
+          </div>
+          <p>安装依赖包并允许 apt 通过 HTTPS 使用存储库：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+</code></pre>
+          </div>
+          <p>添加 Docker 的 GPG 密钥：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+</code></pre>
+          </div>
+          <p>将 Docker 存储库添加到 apt 的源列表中：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">add-apt-repository <span style="color:#e6db74">&#34;deb [arch=amd64] https://download.docker.com/linux/ubuntu </span><span style="color:#66d9ef">$(</span>lsb_release -cs<span style="color:#66d9ef">)</span><span style="color:#e6db74"> stable&#34;</span>
+</code></pre>
+          </div>
+          <p>再次更新软件包列表并安装 Docker：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt update
 apt install docker-ce docker-ce-cli containerd.io
-</code></pre></div><p>验证 Docker 是否已安装：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker run hello-world
-</code></pre></div><p>上述命令将下载 <code>hello-world</code> 镜像并启动该镜像的一个容器。如果 Docker 正确安装，你会看到一条欢迎消息。</p>
-<h3 id="docker-compose">Docker Compose<a hidden class="anchor" aria-hidden="true" href="#docker-compose">#</a></h3>
-<blockquote>
-<p>Docker Compose 是一个用于定义和运行多个 Docker 容器的工具，能够方便地管理多个 Docker 应用并确保这些服务以正确的方式进行配置和连接。</p>
-<p>提到容器管理/容器编排，可能很多小伙伴会想到 Kubernetes。要注意的是，Kubernetes 是针对于分布式系统中的容器编排而设计的，功能更加强大，配置也要更灵活。如果只是单台主机，Docker Compose 会更合适。</p>
-</blockquote>
-<p>更新软件包列表并安装 Docker-Compose：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt update
+</code></pre>
+          </div>
+          <p>验证 Docker 是否已安装：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">docker run hello-world
+</code></pre>
+          </div>
+          <p>
+            上述命令将下载
+            <code>hello-world</code> 镜像并启动该镜像的一个容器。如果 Docker
+            正确安装，你会看到一条欢迎消息。
+          </p>
+          <h3 id="docker-compose">
+            Docker Compose<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#docker-compose"
+              >#</a
+            >
+          </h3>
+          <blockquote>
+            <p>
+              Docker Compose 是一个用于定义和运行多个 Docker
+              容器的工具，能够方便地管理多个 Docker
+              应用并确保这些服务以正确的方式进行配置和连接。
+            </p>
+            <p>
+              提到容器管理/容器编排，可能很多小伙伴会想到
+              Kubernetes。要注意的是，Kubernetes
+              是针对于分布式系统中的容器编排而设计的，功能更加强大，配置也要更灵活。如果只是单台主机，Docker
+              Compose 会更合适。
+            </p>
+          </blockquote>
+          <p>更新软件包列表并安装 Docker-Compose：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt update
 apt install docker-compose
-</code></pre></div><p>验证 Docker Compose 是否已经正确安装：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker-compose --version
-</code></pre></div><p>如果 Docker Compose 正确安装，会打印当前的版本号，如 <code>1.29.2</code>。</p>
-<p>如果上述方法出现问题，可以通过从 Docker 官网手动下载二进制文件再安装的方式：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">curl -L <span style="color:#e6db74">&#34;https://github.com/docker/compose/releases/download/1.29.2/docker-compose-</span><span style="color:#66d9ef">$(</span>uname -s<span style="color:#66d9ef">)</span><span style="color:#e6db74">-</span><span style="color:#66d9ef">$(</span>uname -m<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -o /usr/local/bin/docker-compose
+</code></pre>
+          </div>
+          <p>验证 Docker Compose 是否已经正确安装：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">docker-compose --version
+</code></pre>
+          </div>
+          <p>
+            如果 Docker Compose 正确安装，会打印当前的版本号，如
+            <code>1.29.2</code>。
+          </p>
+          <p>
+            如果上述方法出现问题，可以通过从 Docker
+            官网手动下载二进制文件再安装的方式：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">curl -L <span style="color:#e6db74">&#34;https://github.com/docker/compose/releases/download/1.29.2/docker-compose-</span><span style="color:#66d9ef">$(</span>uname -s<span style="color:#66d9ef">)</span><span style="color:#e6db74">-</span><span style="color:#66d9ef">$(</span>uname -m<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
-</code></pre></div><p>上述命令将会从官网下载 1.29.2 版本的 Docker Compose（或者你也可以访问 <a href="https://github.com/docker/compose/releases">Docker Compose Releases</a> 选择其他版本）的二进制文件，并添加可执行权限。完成后，同样可以使用 <code>docker-compose --version</code> 验证安装是否成功。</p>
-<h3 id="caddy">Caddy<a hidden class="anchor" aria-hidden="true" href="#caddy">#</a></h3>
-<blockquote>
-<p>Caddy 是一个使用 Go 编写的现代化 Web 服务器，它的特点是开箱即用、安全和自动化。Caddy 提供 <a href="https://letsencrypt.org/zh-cn">Let&rsquo;s Encrypt</a> TLS 证书的自动获取功能，同时也支持反向代理、负载均衡、WebSocket 等等。</p>
-</blockquote>
-<p>安装存储库相关组件：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt install debian-keyring debian-archive-keyring apt-transport-https
-</code></pre></div><p>将 Caddy 稳定版的 GPG 密钥导入到系统：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">curl -1sLf <span style="color:#e6db74">&#39;https://dl.cloudsmith.io/public/caddy/stable/gpg.key&#39;</span> | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
-</code></pre></div><p>将 Caddy 稳定版存储库添加到 apt 的源列表中：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">curl -1sLf <span style="color:#e6db74">&#39;https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt&#39;</span> | tee /etc/apt/sources.list.d/caddy-stable.list
-</code></pre></div><p>更新软件包列表并安装 Caddy：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt update
+</code></pre>
+          </div>
+          <p>
+            上述命令将会从官网下载 1.29.2 版本的 Docker
+            Compose（或者你也可以访问
+            <a href="https://github.com/docker/compose/releases"
+              >Docker Compose Releases</a
+            >
+            选择其他版本）的二进制文件，并添加可执行权限。完成后，同样可以使用
+            <code>docker-compose --version</code> 验证安装是否成功。
+          </p>
+          <h3 id="caddy">
+            Caddy<a hidden class="anchor" aria-hidden="true" href="#caddy">#</a>
+          </h3>
+          <blockquote>
+            <p>
+              Caddy 是一个使用 Go 编写的现代化 Web
+              服务器，它的特点是开箱即用、安全和自动化。Caddy 提供
+              <a href="https://letsencrypt.org/zh-cn">Let&rsquo;s Encrypt</a>
+              TLS 证书的自动获取功能，同时也支持反向代理、负载均衡、WebSocket
+              等等。
+            </p>
+          </blockquote>
+          <p>安装存储库相关组件：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt install debian-keyring debian-archive-keyring apt-transport-https
+</code></pre>
+          </div>
+          <p>将 Caddy 稳定版的 GPG 密钥导入到系统：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">curl -1sLf <span style="color:#e6db74">&#39;https://dl.cloudsmith.io/public/caddy/stable/gpg.key&#39;</span> | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+</code></pre>
+          </div>
+          <p>将 Caddy 稳定版存储库添加到 apt 的源列表中：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">curl -1sLf <span style="color:#e6db74">&#39;https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt&#39;</span> | tee /etc/apt/sources.list.d/caddy-stable.list
+</code></pre>
+          </div>
+          <p>更新软件包列表并安装 Caddy：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt update
 apt install caddy
-</code></pre></div><p>验证 Caddy 是否已经正确安装：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">caddy version
-</code></pre></div><p>如果 Caddy 正确安装，会打印当前的版本号，如 <code>v2.6.4</code>。</p>
-<h3 id="hugo">Hugo<a hidden class="anchor" aria-hidden="true" href="#hugo">#</a></h3>
-<blockquote>
-<p>Hugo 是一个用 Go 编写的静态网站生成器，非常适合通过 markdown 文件来创建个人博客、公司主页等静态站点。</p>
-</blockquote>
-<p>更新软件包列表并安装 Hugo：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">apt update
+</code></pre>
+          </div>
+          <p>验证 Caddy 是否已经正确安装：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">caddy version
+</code></pre>
+          </div>
+          <p>
+            如果 Caddy 正确安装，会打印当前的版本号，如 <code>v2.6.4</code>。
+          </p>
+          <h3 id="hugo">
+            Hugo<a hidden class="anchor" aria-hidden="true" href="#hugo">#</a>
+          </h3>
+          <blockquote>
+            <p>
+              Hugo 是一个用 Go 编写的静态网站生成器，非常适合通过 markdown
+              文件来创建个人博客、公司主页等静态站点。
+            </p>
+          </blockquote>
+          <p>更新软件包列表并安装 Hugo：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">apt update
 apt install hugo
-</code></pre></div><p>验证 Hugo 是否已经正确安装：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">hugo version
-</code></pre></div><p>如果 Hugo 正确安装，会打印当前的版本号，如 <code>v0.92.2</code>。</p>
-<hr>
-<h2 id="step02--搭建-chatgpt-主站">Step02 | 搭建 ChatGPT 主站<a hidden class="anchor" aria-hidden="true" href="#step02--搭建-chatgpt-主站">#</a></h2>
-<p>这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名 <code>https://erronliu.top/</code>。</p>
-<h3 id="拉取镜像">拉取镜像<a hidden class="anchor" aria-hidden="true" href="#拉取镜像">#</a></h3>
-<p>这次我们使用的源代码来自于开源仓库 <a href="https://github.com/Chanzhaoyu/chatgpt-web">chatgpt-web</a>，但这里不需要向上次那样 Fork 到自己的仓库，直接使用原作者的仓库即可。</p>
-<p>由于我们要通过 Docker 进行<strong>容器化部署</strong>，所以首先拉取作者在 Docker Hub 上的镜像：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker pull chenzhaoyu94/chatgpt-web
-</code></pre></div><h3 id="配置-docker-compose">配置 Docker Compose<a hidden class="anchor" aria-hidden="true" href="#配置-docker-compose">#</a></h3>
-<p>接下来，我们创建 Docker Compose 配置文件。首先，自己选择一个存放位置，假如你选择的是 <code>/home/your_dir/</code>，那么通过以下命令创建 <code>docker-compose.yml</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">touch /home/your_dir/docker-compose.yml
-</code></pre></div><p>以 Vim 为例，编辑 <code>docker-compose.yml</code>：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vim /home/your_dir/docker-compose.yml
-</code></pre></div><p>向文件中写入以下内容：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
+</code></pre>
+          </div>
+          <p>验证 Hugo 是否已经正确安装：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">hugo version
+</code></pre>
+          </div>
+          <p>
+            如果 Hugo 正确安装，会打印当前的版本号，如 <code>v0.92.2</code>。
+          </p>
+          <hr />
+          <h2 id="step02--搭建-chatgpt-主站">
+            Step02 | 搭建 ChatGPT 主站<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#step02--搭建-chatgpt-主站"
+              >#</a
+            >
+          </h2>
+          <p>
+            这一部分开始正式搭网站。首先是搭建 ChatGPT 页面，并且解析到域名
+            <code>https://erronliu.top/</code>。
+          </p>
+          <h3 id="拉取镜像">
+            拉取镜像<a hidden class="anchor" aria-hidden="true" href="#拉取镜像"
+              >#</a
+            >
+          </h3>
+          <p>
+            这次我们使用的源代码来自于开源仓库
+            <a href="https://github.com/Chanzhaoyu/chatgpt-web">chatgpt-web</a
+            >，但这里不需要向上次那样 Fork
+            到自己的仓库，直接使用原作者的仓库即可。
+          </p>
+          <p>
+            由于我们要通过 Docker
+            进行<strong>容器化部署</strong>，所以首先拉取作者在 Docker Hub
+            上的镜像：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">docker pull chenzhaoyu94/chatgpt-web
+</code></pre>
+          </div>
+          <h3 id="配置-docker-compose">
+            配置 Docker Compose<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#配置-docker-compose"
+              >#</a
+            >
+          </h3>
+          <p>
+            接下来，我们创建 Docker Compose
+            配置文件。首先，自己选择一个存放位置，假如你选择的是
+            <code>/home/your_dir/</code>，那么通过以下命令创建
+            <code>docker-compose.yml</code>：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">touch /home/your_dir/docker-compose.yml
+</code></pre>
+          </div>
+          <p>以 Vim 为例，编辑 <code>docker-compose.yml</code>：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">vim /home/your_dir/docker-compose.yml
+</code></pre>
+          </div>
+          <p>向文件中写入以下内容：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
 
 <span style="color:#f92672">services</span>:
   <span style="color:#f92672">gpt</span>:
@@ -425,101 +1125,469 @@ apt install hugo
     <span style="color:#f92672">environment</span>:
       <span style="color:#f92672">AUTH_SECRET_KEY</span>: <span style="color:#ae81ff">YOUR_SECRET_KEY</span>
       <span style="color:#f92672">OPENAI_API_KEY</span>: <span style="color:#ae81ff">YOUR_OPENAI_API_KEY</span>
-</code></pre></div><p>其中，<code>gpt</code> 和 <code>chatgptweb</code> 分别是服务名称和容器名称，你也可以换成别的。<code>3002:3002</code> 是指将容器的 3002 端口映射到宿主机的 3002 端口。下面的 <code>AUTH_SECRET_KEY</code> 填写你想要设置的访问密码，<code>OPENAI_API_KEY</code> 则是你的 API key。</p>
-<h3 id="启动并反向代理-chatgpt-web-容器">启动并反向代理 ChatGPT Web 容器<a hidden class="anchor" aria-hidden="true" href="#启动并反向代理-chatgpt-web-容器">#</a></h3>
-<p>当文件修改完成之后，可以通过 Docker Compose 启动 Web 服务：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd /home/your_dir/
+</code></pre>
+          </div>
+          <p>
+            其中，<code>gpt</code> 和
+            <code>chatgptweb</code>
+            分别是服务名称和容器名称，你也可以换成别的。<code>3002:3002</code>
+            是指将容器的 3002 端口映射到宿主机的 3002 端口。下面的
+            <code>AUTH_SECRET_KEY</code> 填写你想要设置的访问密码，<code
+              >OPENAI_API_KEY</code
+            >
+            则是你的 API key。
+          </p>
+          <h3 id="启动并反向代理-chatgpt-web-容器">
+            启动并反向代理 ChatGPT Web 容器<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#启动并反向代理-chatgpt-web-容器"
+              >#</a
+            >
+          </h3>
+          <p>当文件修改完成之后，可以通过 Docker Compose 启动 Web 服务：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">cd /home/your_dir/
 docker-compose up -d
-</code></pre></div><p>完成后，查看容器运行状态：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker ps
-</code></pre></div><p>如果容器正常启动并处于运行状态，你会看见一条 <code>STATUS</code> 一列显示已启动多长时间（如 <code>Up 30s</code>）且带有你设置的容器名称（如 <code>chatgptweb</code>）的记录。</p>
-<p>如果这个过程中遇到了错误，可以使用 <code>docker ps -a</code> 查看包括启动失败的容器在内的所有容器状况，记下启动失败的容器 ID 或名称（如 <code>chatgptweb</code>），查看日志定位问题：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker logs chatgptweb --tail <span style="color:#ae81ff">50</span>
-</code></pre></div><p>好了，现在容器已经正常运行并<strong>监听来自 3002 端口的 HTTP 请求</strong>，但是你并不能使用自己电脑的浏览器直接访问这个应用，因为防火墙没有开放 3002 端口。接下来，我们利用 Caddy 来<strong>设置反向代理</strong>，并将 HTTP「一键」<strong>升级到 HTTPS</strong>。</p>
-<p>Caddy 作为一个 Web 服务器，提供命令行直接启动和通过配置文件启动两种方式，我们选择配置文件，毕竟命令太长的话也会不方便。</p>
-<p>检查 Caddy 的配置文件目录下是否已经存在配置文件：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd /etc/caddy/
+</code></pre>
+          </div>
+          <p>完成后，查看容器运行状态：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">docker ps
+</code></pre>
+          </div>
+          <p>
+            如果容器正常启动并处于运行状态，你会看见一条
+            <code>STATUS</code> 一列显示已启动多长时间（如
+            <code>Up 30s</code>）且带有你设置的容器名称（如
+            <code>chatgptweb</code>）的记录。
+          </p>
+          <p>
+            如果这个过程中遇到了错误，可以使用
+            <code>docker ps -a</code>
+            查看包括启动失败的容器在内的所有容器状况，记下启动失败的容器 ID
+            或名称（如 <code>chatgptweb</code>），查看日志定位问题：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">docker logs chatgptweb --tail <span style="color:#ae81ff">50</span>
+</code></pre>
+          </div>
+          <p>
+            好了，现在容器已经正常运行并<strong
+              >监听来自 3002 端口的 HTTP 请求</strong
+            >，但是你并不能使用自己电脑的浏览器直接访问这个应用，因为防火墙没有开放
+            3002 端口。接下来，我们利用 Caddy
+            来<strong>设置反向代理</strong>，并将 HTTP「一键」<strong
+              >升级到 HTTPS</strong
+            >。
+          </p>
+          <p>
+            Caddy 作为一个 Web
+            服务器，提供命令行直接启动和通过配置文件启动两种方式，我们选择配置文件，毕竟命令太长的话也会不方便。
+          </p>
+          <p>检查 Caddy 的配置文件目录下是否已经存在配置文件：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">cd /etc/caddy/
 ls
-</code></pre></div><p>如果目录下已经存在一个名为 <code>Caddyfile</code> 的文件，就可以直接用，否则需要创建：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">touch Caddyfile
-</code></pre></div><p>接下来使用 <code>vim</code> 命令编辑 <code>Caddyfile</code>，将默认内容（如有）注释掉，并添加如下内容：</p>
-<pre tabindex="0"><code>yourdomain.com {
+</code></pre>
+          </div>
+          <p>
+            如果目录下已经存在一个名为
+            <code>Caddyfile</code> 的文件，就可以直接用，否则需要创建：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">touch Caddyfile
+</code></pre>
+          </div>
+          <p>
+            接下来使用 <code>vim</code> 命令编辑
+            <code>Caddyfile</code>，将默认内容（如有）注释掉，并添加如下内容：
+          </p>
+          <pre tabindex="0"><code>yourdomain.com {
     tls your_email@example.com
     reverse_proxy localhost:3002
 }
-</code></pre><p>把 <code>yourdomain.com</code> 替换成你的域名，把 <code>your_email@example.com</code> 替换成你的邮箱地址。</p>
-<p>在这个配置文件中，<code>tls</code> 指定了为该域名添加 TLS 证书，Caddy 会替你向 Let&rsquo;s Encrypt 申请免费的证书，有了可信的证书才能够提供 HTTPS 安全访问服务。<code>reverse_proxy</code> 则指定了将所有对你的域名的请求反向代理到本机的 3002 端口上，也就是交给你刚刚部署好的以 Docker 容器形式运行的 ChatGPT 应用来进行实际的处理。</p>
-<p>修改好配置文件后，启动 Caddy：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">caddy start
-</code></pre></div><p>如果 Caddy 的启动出现了报错，可以查看报错原因：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">systemctl status caddy
-</code></pre></div><p>Caddy 的启动也没有问题的话，你可以使用浏览器直接访问 <code>https://yourdomain.com/</code> 来检查是否反向代理成功。</p>
-<p>至此，主站部分就搭建完成了，基于 ChatGPT 的 Web 应用可以直接使用。</p>
-<hr>
-<h2 id="step03--搭建博客">Step03 | 搭建博客<a hidden class="anchor" aria-hidden="true" href="#step03--搭建博客">#</a></h2>
-<p>在上一节我们已经使用 Caddy 将 <code>yourdomain.com</code> 代理到 ChatGPT Web 应用，接下来，将 <code>yourdomain.com/home</code> 代理到个人博客。</p>
-<h3 id="创建-hugo-站点">创建 Hugo 站点<a hidden class="anchor" aria-hidden="true" href="#创建-hugo-站点">#</a></h3>
-<p>首先，来到你的工作目录（这里以 <code>/home/sites</code> 为例），并创建一个新站点：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd /home/sites/
+</code></pre>
+          <p>
+            把 <code>yourdomain.com</code> 替换成你的域名，把
+            <code>your_email@example.com</code> 替换成你的邮箱地址。
+          </p>
+          <p>
+            在这个配置文件中，<code>tls</code> 指定了为该域名添加 TLS
+            证书，Caddy 会替你向 Let&rsquo;s Encrypt
+            申请免费的证书，有了可信的证书才能够提供 HTTPS 安全访问服务。<code
+              >reverse_proxy</code
+            >
+            则指定了将所有对你的域名的请求反向代理到本机的 3002
+            端口上，也就是交给你刚刚部署好的以 Docker 容器形式运行的 ChatGPT
+            应用来进行实际的处理。
+          </p>
+          <p>修改好配置文件后，启动 Caddy：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">caddy start
+</code></pre>
+          </div>
+          <p>如果 Caddy 的启动出现了报错，可以查看报错原因：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">systemctl status caddy
+</code></pre>
+          </div>
+          <p>
+            Caddy 的启动也没有问题的话，你可以使用浏览器直接访问
+            <code>https://yourdomain.com/</code> 来检查是否反向代理成功。
+          </p>
+          <p>
+            至此，主站部分就搭建完成了，基于 ChatGPT 的 Web 应用可以直接使用。
+          </p>
+          <hr />
+          <h2 id="step03--搭建博客">
+            Step03 | 搭建博客<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#step03--搭建博客"
+              >#</a
+            >
+          </h2>
+          <p>
+            在上一节我们已经使用 Caddy 将 <code>yourdomain.com</code> 代理到
+            ChatGPT Web 应用，接下来，将
+            <code>yourdomain.com/home</code> 代理到个人博客。
+          </p>
+          <h3 id="创建-hugo-站点">
+            创建 Hugo 站点<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#创建-hugo-站点"
+              >#</a
+            >
+          </h3>
+          <p>
+            首先，来到你的工作目录（这里以
+            <code>/home/sites</code> 为例），并创建一个新站点：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">cd /home/sites/
 hugo new site my-site -f yml
-</code></pre></div><p>这里的 <code>my-site</code> 是你的站点名，可以改成你自己喜欢的。</p>
-<p>接下来设置主题。</p>
-<p>主题设置一般有两种方式，一种是直接 <code>git clone</code>，另一种则是使用 Git 的 <code>submodule</code> 命令，由于后者更加便于管理，所以我们选择后面一种。以我自己使用的 <a href="https://github.com/adityatelange/hugo-PaperMod">PaperMod</a> 主题为例，运行以下命令来初始化 Git 仓库并下载 PaperMod 主题：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">cd my-site
+</code></pre>
+          </div>
+          <p>
+            这里的 <code>my-site</code> 是你的站点名，可以改成你自己喜欢的。
+          </p>
+          <p>接下来设置主题。</p>
+          <p>
+            主题设置一般有两种方式，一种是直接
+            <code>git clone</code>，另一种则是使用 Git 的
+            <code>submodule</code>
+            命令，由于后者更加便于管理，所以我们选择后面一种。以我自己使用的
+            <a href="https://github.com/adityatelange/hugo-PaperMod"
+              >PaperMod</a
+            >
+            主题为例，运行以下命令来初始化 Git 仓库并下载 PaperMod 主题：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">cd my-site
 git init
 git submodule add --depth<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> https://github.com/adityatelange/hugo-PaperMod.git themes/PaperMod
 git submodule update --init --recursive
-</code></pre></div><blockquote>
-<p>在主题有更新时，可以使用 <code>git submodule update --remote --merge</code> 命令来获取更新。</p>
-</blockquote>
-<p>接下来，编辑配置文件：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vim config.yml
-</code></pre></div><p>把内容改为如下所示：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">baseURL</span>: <span style="color:#ae81ff">https://yourdomain.com/home/</span>
+</code></pre>
+          </div>
+          <blockquote>
+            <p>
+              在主题有更新时，可以使用
+              <code>git submodule update --remote --merge</code>
+              命令来获取更新。
+            </p>
+          </blockquote>
+          <p>接下来，编辑配置文件：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">vim config.yml
+</code></pre>
+          </div>
+          <p>把内容改为如下所示：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">baseURL</span>: <span style="color:#ae81ff">https://yourdomain.com/home/</span>
 <span style="color:#f92672">languageCode</span>: <span style="color:#ae81ff">zh-CN</span>
 <span style="color:#f92672">title</span>: <span style="color:#ae81ff">My Blog</span>
 <span style="color:#f92672">contentDir</span>: <span style="color:#ae81ff">./content</span>
 <span style="color:#f92672">publicDir</span>: <span style="color:#ae81ff">./public</span>
 <span style="color:#f92672">theme</span>: <span style="color:#ae81ff">PaperMod</span>
-</code></pre></div><p>其中：</p>
-<ul>
-<li><code>baseURL</code> 是你的博客网站内各个链接的基础 URL，比如说你在首页有一个超链接指向 <code>/archive</code> 页面，Hugo 在实际的网站中就会帮你把链接 URL 补全为 <code>https://yourdomain.com/home/archive</code>。</li>
-<li><code>languageCode</code> 是网站的语言代码，因为咱们是中文站点所以用 <code>zh-CN</code>，如果你想用英文，就是 <code>en</code>。</li>
-<li><code>title</code> 是你网站的标题，换成你喜欢的就可以。</li>
-<li><code>contentDir</code> 是存放文本内容的位置，一般是用来存放 markdown 格式的原文。</li>
-<li><code>publicDir</code> 是存放静态网站的 HTML, CSS, JavaScript 等文件的位置。这个目录的文件你不用管，Hugo 会根据你的文本内容自动生成。</li>
-<li><code>theme</code> 则是选择想要使用的主题。主题需要位于网站根目录的 <code>theme</code> 目录下。</li>
-</ul>
-<blockquote>
-<p><code>contentDir</code> 的 <code>./content</code> 是相对路径。这里不推荐设置为绝对路径，因为在容器中绝对路径将失效。</p>
-<p>由于本文介绍的博客搭建方式不依赖 <code>publicDir</code> 目录生成的文件，所以也可以不在配置文件中设置 <code>publicDir</code>。</p>
-</blockquote>
-<h3 id="将站点推送到-github">将站点推送到 GitHub<a hidden class="anchor" aria-hidden="true" href="#将站点推送到-github">#</a></h3>
-<p>配置完成之后，添加一篇文章新文章来查看效果：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">hugo new posts/hello.md
+</code></pre>
+          </div>
+          <p>其中：</p>
+          <ul>
+            <li>
+              <code>baseURL</code> 是你的博客网站内各个链接的基础
+              URL，比如说你在首页有一个超链接指向
+              <code>/archive</code> 页面，Hugo 在实际的网站中就会帮你把链接 URL
+              补全为 <code>https://yourdomain.com/home/archive</code>。
+            </li>
+            <li>
+              <code>languageCode</code>
+              是网站的语言代码，因为咱们是中文站点所以用
+              <code>zh-CN</code>，如果你想用英文，就是 <code>en</code>。
+            </li>
+            <li><code>title</code> 是你网站的标题，换成你喜欢的就可以。</li>
+            <li>
+              <code>contentDir</code> 是存放文本内容的位置，一般是用来存放
+              markdown 格式的原文。
+            </li>
+            <li>
+              <code>publicDir</code> 是存放静态网站的 HTML, CSS, JavaScript
+              等文件的位置。这个目录的文件你不用管，Hugo
+              会根据你的文本内容自动生成。
+            </li>
+            <li>
+              <code>theme</code>
+              则是选择想要使用的主题。主题需要位于网站根目录的
+              <code>theme</code> 目录下。
+            </li>
+          </ul>
+          <blockquote>
+            <p>
+              <code>contentDir</code> 的
+              <code>./content</code>
+              是相对路径。这里不推荐设置为绝对路径，因为在容器中绝对路径将失效。
+            </p>
+            <p>
+              由于本文介绍的博客搭建方式不依赖
+              <code>publicDir</code>
+              目录生成的文件，所以也可以不在配置文件中设置
+              <code>publicDir</code>。
+            </p>
+          </blockquote>
+          <h3 id="将站点推送到-github">
+            将站点推送到 GitHub<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#将站点推送到-github"
+              >#</a
+            >
+          </h3>
+          <p>配置完成之后，添加一篇文章新文章来查看效果：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">hugo new posts/hello.md
 vim content/posts/hello.md
-</code></pre></div><p>随便往这个 markdown 文件中写点什么就好。</p>
-<p>试着运行你的 Hugo 站点：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">hugo server -D
-</code></pre></div><p>其中，<code>-D</code> 参数表示在网站中包含草稿，而草稿是指在 markdown 元数据中具有 <code>draft: true</code> 属性的文章。</p>
-<p>如果你的网站正常运行，应该会在终端打印 <code>Web Server is available at http://localhost:1313/</code> 之类的信息。同样由于你的云服务器没开放 1313 端口，需要使用 Caddy 进行反向代理才能访问。</p>
-<p>在此之前，我们需要先停止网站的运行，到 GitHub 上将该网站发布到你的账号下。</p>
-<p>来到 GitHub，找到创建新存储库「New Repository」的入口，开始创建仓库。仓库名字随便起，但要注意取消勾选「Add a README file」，也不要选择 <code>.gitignore</code> 模板或者许可证，因为这样会导致你的仓库默认有一个提交，从而导致推送失败。</p>
-<p><img loading="lazy" src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230426143107841.png" alt="image-20230426143107841"  />
-</p>
-<p>仓库创建完成后，以我的 GitHub 仓库地址 <code>https://github.com/ErronZrz/hugo-home</code> 为例，通过以下命令将本次仓库的内容推送到远程仓库：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">git remote add origin git@github.com/ErronZrz/hugo-home.git
+</code></pre>
+          </div>
+          <p>随便往这个 markdown 文件中写点什么就好。</p>
+          <p>试着运行你的 Hugo 站点：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">hugo server -D
+</code></pre>
+          </div>
+          <p>
+            其中，<code>-D</code> 参数表示在网站中包含草稿，而草稿是指在
+            markdown 元数据中具有 <code>draft: true</code> 属性的文章。
+          </p>
+          <p>
+            如果你的网站正常运行，应该会在终端打印
+            <code>Web Server is available at http://localhost:1313/</code>
+            之类的信息。同样由于你的云服务器没开放 1313 端口，需要使用 Caddy
+            进行反向代理才能访问。
+          </p>
+          <p>
+            在此之前，我们需要先停止网站的运行，到 GitHub
+            上将该网站发布到你的账号下。
+          </p>
+          <p>
+            来到 GitHub，找到创建新存储库「New
+            Repository」的入口，开始创建仓库。仓库名字随便起，但要注意取消勾选「Add
+            a README file」，也不要选择
+            <code>.gitignore</code>
+            模板或者许可证，因为这样会导致你的仓库默认有一个提交，从而导致推送失败。
+          </p>
+          <p>
+            <img
+              loading="lazy"
+              src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/image-20230426143107841.png"
+              alt="image-20230426143107841"
+            />
+          </p>
+          <p>
+            仓库创建完成后，以我的 GitHub 仓库地址
+            <code>https://github.com/ErronZrz/hugo-home</code>
+            为例，通过以下命令将本次仓库的内容推送到远程仓库：
+          </p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">git remote add origin git@github.com/ErronZrz/hugo-home.git
 git add .
 git commit -m <span style="color:#e6db74">&#34;Initial Commit&#34;</span>
 git push -u origin master
-</code></pre></div><blockquote>
-<p><code>git@</code> 开头的地址表示使用 SSH 协议来连接远程仓库，使用 SSH 是因为我们之前是通过 SSH 密钥的方式登录 GitHub 账号的，如果你的云服务器之前登录 GitHub 账号使用的是账号密码，那么用 HTTPS 链接即可。</p>
-</blockquote>
-<h3 id="启动并反向代理-hugo-容器">启动并反向代理 Hugo 容器<a hidden class="anchor" aria-hidden="true" href="#启动并反向代理-hugo-容器">#</a></h3>
-<p>接下来，我们在 Docker Compose 配置文件中配置 Hugo 镜像：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vim /home/your_dir/docker_compose.yml
-</code></pre></div><p>将文件修改为下面的样子：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
+</code></pre>
+          </div>
+          <blockquote>
+            <p>
+              <code>git@</code> 开头的地址表示使用 SSH 协议来连接远程仓库，使用
+              SSH 是因为我们之前是通过 SSH 密钥的方式登录 GitHub
+              账号的，如果你的云服务器之前登录 GitHub
+              账号使用的是账号密码，那么用 HTTPS 链接即可。
+            </p>
+          </blockquote>
+          <h3 id="启动并反向代理-hugo-容器">
+            启动并反向代理 Hugo 容器<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#启动并反向代理-hugo-容器"
+              >#</a
+            >
+          </h3>
+          <p>接下来，我们在 Docker Compose 配置文件中配置 Hugo 镜像：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">vim /home/your_dir/docker_compose.yml
+</code></pre>
+          </div>
+          <p>将文件修改为下面的样子：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">version</span>: <span style="color:#e6db74">&#39;3&#39;</span>
 
 <span style="color:#f92672">services</span>:
   <span style="color:#f92672">gpt</span>:
@@ -539,14 +1607,46 @@ git push -u origin master
       - <span style="color:#ae81ff">1313</span>:<span style="color:#ae81ff">1313</span>
     <span style="color:#f92672">volumes</span>:
       - <span style="color:#ae81ff">/home/sites/my-site:/src</span>
-</code></pre></div><p>同样地，服务名称 <code>hugo</code> 和容器名称 <code>hugoweb</code> 可以换成别的，<code>baseURL</code> 换成自己的域名，<code>volumes</code> 下面的前一个目录也要换成你的网站目录。后一个目录 <code>/src</code> 是容器内的目录，不用修改。</p>
-<p>修改完成后，重新获取镜像并创建和运行容器：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">docker-compose down
+</code></pre>
+          </div>
+          <p>
+            同样地，服务名称 <code>hugo</code> 和容器名称
+            <code>hugoweb</code> 可以换成别的，<code>baseURL</code>
+            换成自己的域名，<code>volumes</code>
+            下面的前一个目录也要换成你的网站目录。后一个目录
+            <code>/src</code> 是容器内的目录，不用修改。
+          </p>
+          <p>修改完成后，重新获取镜像并创建和运行容器：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">docker-compose down
 docker-compose up -d
-</code></pre></div><p>最后一步，我们需要在 Caddy 中设置反向代理：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">vim /etc/caddy/Caddyfile
-</code></pre></div><p>将文件内容修改为：</p>
-<pre tabindex="0"><code>yourdomain.com {
+</code></pre>
+          </div>
+          <p>最后一步，我们需要在 Caddy 中设置反向代理：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">vim /etc/caddy/Caddyfile
+</code></pre>
+          </div>
+          <p>将文件内容修改为：</p>
+          <pre tabindex="0"><code>yourdomain.com {
     tls your_email@example.com
     
     @home path /home/*
@@ -555,154 +1655,230 @@ docker-compose up -d
     reverse_proxy @home localhost:1313
     reverse_proxy @nohome localhost:3002
 }
-</code></pre><p>其中 <code>@home</code> 和 <code>@nohome</code> 是命名匹配器。最终，当请求路径以 <code>/home/</code> 开头时，将会匹配到 <code>@home</code>，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT Web 应用容器。</p>
-<blockquote>
-<p>有关 <code>Caddyfile</code> 文件的编写规则，可以前往<a href="https://caddy2.dengxiaolong.com/docs/caddyfile">这个页面</a>获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用 <code>not @home</code> 代替 <code>@nohome</code> 不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。</p>
-</blockquote>
-<p>完成后，重新加载配置文件：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">caddy reload
-</code></pre></div><p>如果 Caddy 工作正常，那么你应该能够通过 <code>https://yourdomain.com/home</code> 来访问你的博客了。同时，上一部分的 ChatGPT 应用也能正常使用。</p>
-<hr>
-<h2 id="结语">结语<a hidden class="anchor" aria-hidden="true" href="#结语">#</a></h2>
-<p>感谢能读到这里，相信你也已经搭建起了你自己的个人网站了吧😎。</p>
-<p>搭建好之后，你就可以在任何地方编辑博客，并且通过 GitHub 同步到你的服务器上。每当你的服务器使用 <code>git pull</code> 拉取到有新的内容，容器的磁盘空间也会相应更新，这时会触发 Hugo 的自动热重载，你就能够在保持容器运行的情况下查看到博客内容的更新了。</p>
-<p>不过貌似还有更加省事的方式，甚至可以不用 Git 来同步，可以自行摸索。</p>
-<p>并且如果你想要进一步提升博客网站在外观上的逼格，也可以参考所使用的主题的配置说明，或是前往 Docker 容器内部直接修改网页样式。</p>
-<p>本篇就聊到这儿。886。</p>
-<section class="footnotes" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn:1" role="doc-endnote">
-<p>根据 《互联网信息服务管理办法》以及 《非经营性互联网信息服务备案管理办法》，国家对非经营性互联网信息服务实行备案制度，对经营性互联网信息服务实行许可制度。未取得许可或者未履行 ICP 备案手续的，不得从事互联网信息服务。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
-</li>
-</ol>
-</section>
+</code></pre>
+          <p>
+            其中 <code>@home</code> 和
+            <code>@nohome</code> 是命名匹配器。最终，当请求路径以
+            <code>/home/</code> 开头时，将会匹配到
+            <code>@home</code>，请求被代理到 Hugo 容器；否则请求被代理到 ChatGPT
+            Web 应用容器。
+          </p>
+          <blockquote>
+            <p>
+              有关 <code>Caddyfile</code> 文件的编写规则，可以前往<a
+                href="https://caddy2.dengxiaolong.com/docs/caddyfile"
+                >这个页面</a
+              >获取更多信息。可能有人会疑惑为什么要写两个匹配器，直接用
+              <code>not @home</code> 代替
+              <code>@nohome</code>
+              不可以吗？但我试过，确实不可以😅。所以我其实也没很明白这个配置文件的工作原理。
+            </p>
+          </blockquote>
+          <p>完成后，重新加载配置文件：</p>
+          <div class="highlight">
+            <pre
+              tabindex="0"
+              style="
+                color: #f8f8f2;
+                background-color: #272822;
+                -moz-tab-size: 4;
+                -o-tab-size: 4;
+                tab-size: 4;
+              "
+            ><code class="language-sh" data-lang="sh">caddy reload
+</code></pre>
+          </div>
+          <p>
+            如果 Caddy 工作正常，那么你应该能够通过
+            <code>https://yourdomain.com/home</code>
+            来访问你的博客了。同时，上一部分的 ChatGPT 应用也能正常使用。
+          </p>
+          <hr />
+          <h2 id="结语">
+            结语<a hidden class="anchor" aria-hidden="true" href="#结语">#</a>
+          </h2>
+          <p>感谢能读到这里，相信你也已经搭建起了你自己的个人网站了吧😎。</p>
+          <p>
+            搭建好之后，你就可以在任何地方编辑博客，并且通过 GitHub
+            同步到你的服务器上。每当你的服务器使用
+            <code>git pull</code>
+            拉取到有新的内容，容器的磁盘空间也会相应更新，这时会触发 Hugo
+            的自动热重载，你就能够在保持容器运行的情况下查看到博客内容的更新了。
+          </p>
+          <p>
+            不过貌似还有更加省事的方式，甚至可以不用 Git 来同步，可以自行摸索。
+          </p>
+          <p>
+            并且如果你想要进一步提升博客网站在外观上的逼格，也可以参考所使用的主题的配置说明，或是前往
+            Docker 容器内部直接修改网页样式。
+          </p>
+          <p>本篇就聊到这儿。886。</p>
+          <section class="footnotes" role="doc-endnotes">
+            <hr />
+            <ol>
+              <li id="fn:1" role="doc-endnote">
+                <p>
+                  根据 《互联网信息服务管理办法》以及
+                  《非经营性互联网信息服务备案管理办法》，国家对非经营性互联网信息服务实行备案制度，对经营性互联网信息服务实行许可制度。未取得许可或者未履行
+                  ICP 备案手续的，不得从事互联网信息服务。&#160;<a
+                    href="#fnref:1"
+                    class="footnote-backref"
+                    role="doc-backlink"
+                    >&#x21a9;&#xfe0e;</a
+                  >
+                </p>
+              </li>
+            </ol>
+          </section>
+        </div>
 
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-    </ul>
-  </footer>
-</article>
+        <footer class="post-footer">
+          <ul class="post-tags"></ul>
+        </footer>
+      </article>
     </main>
-    
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://erronliu.top/home/">Weleen Words</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
 
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
+    <footer class="footer">
+      <span
+        >&copy; 2023 <a href="https://home.erronliu.top/">Weleen Words</a></span
+      >
+      <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank"
+          >Hugo</a
+        >
+        &
+        <a
+          href="https://github.com/adityatelange/hugo-PaperMod/"
+          rel="noopener"
+          target="_blank"
+          >PaperMod</a
+        >
+      </span>
+    </footer>
+    <a
+      href="#top"
+      aria-label="go to top"
+      title="Go to Top (Alt + G)"
+      class="top-link"
+      id="top-link"
+      accesskey="g"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 12 6"
+        fill="currentColor"
+      >
+        <path d="M12 6H0l6-6z" />
+      </svg>
+    </a>
+
+    <script>
+      let menu = document.getElementById("menu");
+      if (menu) {
         menu.scrollLeft = localStorage.getItem("menu-scroll-position");
         menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
+          localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        };
+      }
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
+          e.preventDefault();
+          var id = this.getAttribute("href").substr(1);
+          if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            document
+              .querySelector(`[id='${decodeURIComponent(id)}']`)
+              .scrollIntoView({
+                behavior: "smooth",
+              });
+          } else {
+            document
+              .querySelector(`[id='${decodeURIComponent(id)}']`)
+              .scrollIntoView();
+          }
+          if (id === "top") {
+            history.replaceState(null, null, " ");
+          } else {
+            history.pushState(null, null, `#${id}`);
+          }
         });
-    });
-
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
+      });
+    </script>
+    <script>
+      var mybutton = document.getElementById("top-link");
+      window.onscroll = function () {
+        if (
+          document.body.scrollTop > 800 ||
+          document.documentElement.scrollTop > 800
+        ) {
+          mybutton.style.visibility = "visible";
+          mybutton.style.opacity = "1";
         } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
+          mybutton.style.visibility = "hidden";
+          mybutton.style.opacity = "0";
         }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
+      };
+    </script>
+    <script>
+      document.getElementById("theme-toggle").addEventListener("click", () => {
         if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
+          document.body.classList.remove("dark");
+          localStorage.setItem("pref-theme", "light");
         } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
+          document.body.classList.add("dark");
+          localStorage.setItem("pref-theme", "dark");
         }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
+      });
+    </script>
+    <script>
+      document.querySelectorAll("pre > code").forEach((codeblock) => {
         const container = codeblock.parentNode.parentNode;
 
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
+        const copybutton = document.createElement("button");
+        copybutton.classList.add("copy-code");
+        copybutton.innerHTML = "copy";
 
         function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
+          copybutton.innerHTML = "copied!";
+          setTimeout(() => {
+            copybutton.innerHTML = "copy";
+          }, 2000);
         }
 
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
+        copybutton.addEventListener("click", (cb) => {
+          if ("clipboard" in navigator) {
+            navigator.clipboard.writeText(codeblock.textContent);
+            copyingDone();
+            return;
+          }
 
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
+          const range = document.createRange();
+          range.selectNodeContents(codeblock);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          try {
+            document.execCommand("copy");
+            copyingDone();
+          } catch (e) {}
+          selection.removeRange(range);
         });
 
         if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
+          container.appendChild(copybutton);
         } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else if (
+          codeblock.parentNode.parentNode.parentNode.parentNode.parentNode
+            .nodeName == "TABLE"
+        ) {
+          codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(
+            copybutton
+          );
         } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
+          codeblock.parentNode.appendChild(copybutton);
         }
-    });
-</script>
-</body>
-
+      });
+    </script>
+  </body>
 </html>

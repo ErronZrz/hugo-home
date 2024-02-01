@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" dir="auto">
-
-<head><meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="robots" content="index, follow">
-<title>【新手向】利用 Vercel 搭建专属 ChatGPT 网站 | Weleen Words</title>
-<meta name="keywords" content="">
-<meta name="description" content="OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="robots" content="index, follow" />
+    <title>【新手向】利用 Vercel 搭建专属 ChatGPT 网站 | Weleen Words</title>
+    <meta name="keywords" content="" />
+    <meta
+      name="description"
+      content="OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
  首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。
   第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。
 首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。
@@ -16,57 +21,89 @@
 首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。
 创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。
 选择好了仓库，右侧就是一些详细设置：
- 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next.">
-<meta name="author" content="">
-<link rel="canonical" href="https://erronliu.top/home/blog/0422-vercel/">
-<link crossorigin="anonymous" href="/home/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css" integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="/home/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js" integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
-    onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://erronliu.top/home/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://erronliu.top/home/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://erronliu.top/home/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://erronliu.top/home/apple-touch-icon.png">
-<link rel="mask-icon" href="https://erronliu.top/home/safari-pinned-tab.svg">
-<meta name="theme-color" content="#2e2e33">
-<meta name="msapplication-TileColor" content="#2e2e33">
-<noscript>
-    <style>
+ 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next."
+    />
+    <meta name="author" content="" />
+    <link rel="canonical" href="https://home.erronliu.top/blog/0422-vercel/" />
+    <link
+      crossorigin="anonymous"
+      href="/home/assets/css/stylesheet.3613efbd0b1772781e8f49935e973cae632a7f61471c05b17be155505ccf87b5.css"
+      integrity="sha256-NhPvvQsXcngej0mTXpc8rmMqf2FHHAWxe&#43;FVUFzPh7U="
+      rel="preload stylesheet"
+      as="style"
+    />
+    <script
+      defer
+      crossorigin="anonymous"
+      src="/home/assets/js/highlight.f413e19d0714851f6474e7ee9632408e58ac146fbdbe62747134bea2fa3415e0.js"
+      integrity="sha256-9BPhnQcUhR9kdOfuljJAjlisFG&#43;9vmJ0cTS&#43;ovo0FeA="
+      onload="hljs.initHighlightingOnLoad();"
+    ></script>
+    <link rel="icon" href="https://home.erronliu.top/favicon.ico" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://home.erronliu.top/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://home.erronliu.top/favicon-32x32.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://home.erronliu.top/apple-touch-icon.png"
+    />
+    <link
+      rel="mask-icon"
+      href="https://home.erronliu.top/safari-pinned-tab.svg"
+    />
+    <meta name="theme-color" content="#2e2e33" />
+    <meta name="msapplication-TileColor" content="#2e2e33" />
+    <noscript>
+      <style>
         #theme-toggle,
         .top-link {
-            display: none;
+          display: none;
         }
-
-    </style>
-    <style>
+      </style>
+      <style>
         @media (prefers-color-scheme: dark) {
-            :root {
-                --theme: rgb(29, 30, 32);
-                --entry: rgb(46, 46, 51);
-                --primary: rgb(218, 218, 219);
-                --secondary: rgb(155, 156, 157);
-                --tertiary: rgb(65, 66, 68);
-                --content: rgb(196, 196, 197);
-                --hljs-bg: rgb(46, 46, 51);
-                --code-bg: rgb(55, 56, 62);
-                --border: rgb(51, 51, 51);
-            }
+          :root {
+            --theme: rgb(29, 30, 32);
+            --entry: rgb(46, 46, 51);
+            --primary: rgb(218, 218, 219);
+            --secondary: rgb(155, 156, 157);
+            --tertiary: rgb(65, 66, 68);
+            --content: rgb(196, 196, 197);
+            --hljs-bg: rgb(46, 46, 51);
+            --code-bg: rgb(55, 56, 62);
+            --border: rgb(51, 51, 51);
+          }
 
-            .list {
-                background: var(--theme);
-            }
+          .list {
+            background: var(--theme);
+          }
 
-            .list:not(.dark)::-webkit-scrollbar-track {
-                background: 0 0;
-            }
+          .list:not(.dark)::-webkit-scrollbar-track {
+            background: 0 0;
+          }
 
-            .list:not(.dark)::-webkit-scrollbar-thumb {
-                border-color: var(--theme);
-            }
+          .list:not(.dark)::-webkit-scrollbar-thumb {
+            border-color: var(--theme);
+          }
         }
-
-    </style>
-</noscript><meta property="og:title" content="【新手向】利用 Vercel 搭建专属 ChatGPT 网站" />
-<meta property="og:description" content="OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
+      </style>
+    </noscript>
+    <meta
+      property="og:title"
+      content="【新手向】利用 Vercel 搭建专属 ChatGPT 网站"
+    />
+    <meta
+      property="og:description"
+      content="OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
  首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。
   第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。
 首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。
@@ -75,15 +112,31 @@
 首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。
 创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。
 选择好了仓库，右侧就是一些详细设置：
- 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://erronliu.top/home/blog/0422-vercel/" /><meta property="article:section" content="blog" />
-<meta property="article:published_time" content="2023-04-22T22:00:00+08:00" />
-<meta property="article:modified_time" content="2023-04-22T22:00:00+08:00" />
+ 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next."
+    />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://home.erronliu.top/blog/0422-vercel/"
+    />
+    <meta property="article:section" content="blog" />
+    <meta
+      property="article:published_time"
+      content="2023-04-22T22:00:00+08:00"
+    />
+    <meta
+      property="article:modified_time"
+      content="2023-04-22T22:00:00+08:00"
+    />
 
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="【新手向】利用 Vercel 搭建专属 ChatGPT 网站"/>
-<meta name="twitter:description" content="OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="【新手向】利用 Vercel 搭建专属 ChatGPT 网站"
+    />
+    <meta
+      name="twitter:description"
+      content="OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。
  首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。
   第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。
 首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。
@@ -92,299 +145,462 @@
 首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。
 创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。
 选择好了仓库，右侧就是一些详细设置：
- 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next."/>
+ 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next."
+    />
 
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Blogs",
+            "item": "https://home.erronliu.top/blog/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "【新手向】利用 Vercel 搭建专属 ChatGPT 网站",
+            "item": "https://home.erronliu.top/blog/0422-vercel/"
+          }
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "【新手向】利用 Vercel 搭建专属 ChatGPT 网站",
+        "name": "【新手向】利用 Vercel 搭建专属 ChatGPT 网站",
+        "description": "OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。\n 首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。\n  第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。\n首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。\n创建好了之后呢，还需要开启代码自动更新，也就是原作者更新代码你的仓库也会更新。具体做法是：\n 来到你 Fork 好的仓库。 点击「Actions」，点击下方的绿色按钮，启用工作流功能。 点击左侧「Upstream Sync」，最后点击右侧「Enable Workflow」，搞定。   第二步：创建 Vercel 应用 有了仓库，我们就可以开始部署了。一般来说，只有拥有服务器才能部署，但 Vercel 免费为用户提供了基础的部署功能，相当于可以白嫖他们家的服务器。顺带一提，Vercel 是一个用于托管 Web 应用的云平台，提供了自动化构建、持续部署、实时分析等功能。\n首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。\n创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。\n选择好了仓库，右侧就是一些详细设置：\n 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next.",
+        "keywords": [],
+        "articleBody": "OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。\n 首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。\n  第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。\n首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。\n创建好了之后呢，还需要开启代码自动更新，也就是原作者更新代码你的仓库也会更新。具体做法是：\n 来到你 Fork 好的仓库。 点击「Actions」，点击下方的绿色按钮，启用工作流功能。 点击左侧「Upstream Sync」，最后点击右侧「Enable Workflow」，搞定。   第二步：创建 Vercel 应用 有了仓库，我们就可以开始部署了。一般来说，只有拥有服务器才能部署，但 Vercel 免费为用户提供了基础的部署功能，相当于可以白嫖他们家的服务器。顺带一提，Vercel 是一个用于托管 Web 应用的云平台，提供了自动化构建、持续部署、实时分析等功能。\n首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。\n创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。\n选择好了仓库，右侧就是一些详细设置：\n 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next.js 不变。 「Root Directory」保持不变。 点击「Environment Variables」，添加两组环境变量：  OPENAI_API_KEY，值填入你的 OpenAI API key。 CODE，由于 key 的余额是有限的，我们当然不希望别人也能随便使用，所以需要在这里设置访问密码。建议大小写字母、数字和特殊符号组合使用，尽可能降低被破解的可能性。支持创建多个密码并用 , 隔开，例如 Abc!123,Xyz@987。    万事俱备之后，点击「Deploy」，Vercel 就会开始自动帮你编译构建你的网站了。稍事等待即可。\n 第三步：开始使用吧 如果前面的步骤都没问题，你的网站应该已经准备就绪。可以通过 Vercel 进入，也可以直接记住域名，输入域名访问。美中不足的是需要魔法，除非你有自己的域名并且设置了代理。\n进入之后，点击左下角可以进行设置，这里需要在「访问密码」一项中填写你刚刚设置的 CODE 的值，如果有多个密码选一个填进去就行。其他的设置也可以调整，例如添加自己的 Prompt 以及修改每次提问携带的历史消息数等等。不过不熟悉的地方不建议乱调，可能会影响 AI 表现。\n如果访问密码正确，API key 也有效，那么请开始尽情享用专属于你的 ChatGPT 助手吧。使用 OpenAI API 方式来提问的不足在于，API key 会过期，并且回答的质量上会稍逊于直接来自 ChatGPT 官网的回答，但优势在于酷炫的外观和支持自定义参数。最重要的一点是，自己搭的网站能做到全天候秒回，有了它之后，你再也不必忍受官网的「Access Denied」、漫长的「思考时间」以及各种用着用着突然跳出来的网络错误提示😅。\n祝你 AI 愉快！\n",
+        "wordCount": "112",
+        "inLanguage": "en",
+        "datePublished": "2023-04-22T22:00:00+08:00",
+        "dateModified": "2023-04-22T22:00:00+08:00",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https://home.erronliu.top/blog/0422-vercel/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Weleen Words",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://home.erronliu.top/favicon.ico"
+          }
+        }
+      }
+    </script>
+  </head>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position":  1 ,
-      "name": "Blogs",
-      "item": "https://erronliu.top/home/blog/"
-    }, 
-    {
-      "@type": "ListItem",
-      "position":  2 ,
-      "name": "【新手向】利用 Vercel 搭建专属 ChatGPT 网站",
-      "item": "https://erronliu.top/home/blog/0422-vercel/"
-    }
-  ]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "【新手向】利用 Vercel 搭建专属 ChatGPT 网站",
-  "name": "【新手向】利用 Vercel 搭建专属 ChatGPT 网站",
-  "description": "OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。\n 首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。\n  第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。\n首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。\n创建好了之后呢，还需要开启代码自动更新，也就是原作者更新代码你的仓库也会更新。具体做法是：\n 来到你 Fork 好的仓库。 点击「Actions」，点击下方的绿色按钮，启用工作流功能。 点击左侧「Upstream Sync」，最后点击右侧「Enable Workflow」，搞定。   第二步：创建 Vercel 应用 有了仓库，我们就可以开始部署了。一般来说，只有拥有服务器才能部署，但 Vercel 免费为用户提供了基础的部署功能，相当于可以白嫖他们家的服务器。顺带一提，Vercel 是一个用于托管 Web 应用的云平台，提供了自动化构建、持续部署、实时分析等功能。\n首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。\n创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。\n选择好了仓库，右侧就是一些详细设置：\n 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next.",
-  "keywords": [
-    
-  ],
-  "articleBody": "OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。\n 首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。\n  第一步：Fork 仓库 第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。\n首先来到 ChatGPT-Next-Web，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 ChatGPT-Next-Web-Weleen，然后点击创建即可。\n创建好了之后呢，还需要开启代码自动更新，也就是原作者更新代码你的仓库也会更新。具体做法是：\n 来到你 Fork 好的仓库。 点击「Actions」，点击下方的绿色按钮，启用工作流功能。 点击左侧「Upstream Sync」，最后点击右侧「Enable Workflow」，搞定。   第二步：创建 Vercel 应用 有了仓库，我们就可以开始部署了。一般来说，只有拥有服务器才能部署，但 Vercel 免费为用户提供了基础的部署功能，相当于可以白嫖他们家的服务器。顺带一提，Vercel 是一个用于托管 Web 应用的云平台，提供了自动化构建、持续部署、实时分析等功能。\n首先来到 Vercel 官网，没有账号的话创建一个，然后找到创建项目（这应该不会有人找不到吧），开始创建项目。\n创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。\n选择好了仓库，右侧就是一些详细设置：\n 「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next.js 不变。 「Root Directory」保持不变。 点击「Environment Variables」，添加两组环境变量：  OPENAI_API_KEY，值填入你的 OpenAI API key。 CODE，由于 key 的余额是有限的，我们当然不希望别人也能随便使用，所以需要在这里设置访问密码。建议大小写字母、数字和特殊符号组合使用，尽可能降低被破解的可能性。支持创建多个密码并用 , 隔开，例如 Abc!123,Xyz@987。    万事俱备之后，点击「Deploy」，Vercel 就会开始自动帮你编译构建你的网站了。稍事等待即可。\n 第三步：开始使用吧 如果前面的步骤都没问题，你的网站应该已经准备就绪。可以通过 Vercel 进入，也可以直接记住域名，输入域名访问。美中不足的是需要魔法，除非你有自己的域名并且设置了代理。\n进入之后，点击左下角可以进行设置，这里需要在「访问密码」一项中填写你刚刚设置的 CODE 的值，如果有多个密码选一个填进去就行。其他的设置也可以调整，例如添加自己的 Prompt 以及修改每次提问携带的历史消息数等等。不过不熟悉的地方不建议乱调，可能会影响 AI 表现。\n如果访问密码正确，API key 也有效，那么请开始尽情享用专属于你的 ChatGPT 助手吧。使用 OpenAI API 方式来提问的不足在于，API key 会过期，并且回答的质量上会稍逊于直接来自 ChatGPT 官网的回答，但优势在于酷炫的外观和支持自定义参数。最重要的一点是，自己搭的网站能做到全天候秒回，有了它之后，你再也不必忍受官网的「Access Denied」、漫长的「思考时间」以及各种用着用着突然跳出来的网络错误提示😅。\n祝你 AI 愉快！\n",
-  "wordCount" : "112",
-  "inLanguage": "en",
-  "datePublished": "2023-04-22T22:00:00+08:00",
-  "dateModified": "2023-04-22T22:00:00+08:00",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": "https://erronliu.top/home/blog/0422-vercel/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "Weleen Words",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://erronliu.top/home/favicon.ico"
-    }
-  }
-}
-</script>
-</head>
+  <body class="" id="top">
+    <script>
+      if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add("dark");
+      } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove("dark");
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.body.classList.add("dark");
+      }
+    </script>
 
-<body class="" id="top">
-<script>
-    if (localStorage.getItem("pref-theme") === "dark") {
-        document.body.classList.add('dark');
-    } else if (localStorage.getItem("pref-theme") === "light") {
-        document.body.classList.remove('dark')
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-    }
-
-</script>
-
-<header class="header">
-    <nav class="nav">
+    <header class="header">
+      <nav class="nav">
         <div class="logo">
-            <a href="https://erronliu.top/home/" accesskey="h" title="Weleen Words (Alt + H)">Weleen Words</a>
-            <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
-                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </button>
-            </div>
+          <a
+            href="https://home.erronliu.top/"
+            accesskey="h"
+            title="Weleen Words (Alt + H)"
+            >Weleen Words</a
+          >
+          <div class="logo-switches">
+            <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+              <svg
+                id="moon"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                ></path>
+              </svg>
+              <svg
+                id="sun"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+          </div>
         </div>
-        <ul id="menu">
-        </ul>
-    </nav>
-</header>
-<main class="main">
+        <ul id="menu"></ul>
+      </nav>
+    </header>
+    <main class="main">
+      <article class="post-single">
+        <header class="post-header">
+          <div class="breadcrumbs">
+            <a href="https://home.erronliu.top/">Home</a>&nbsp;»&nbsp;<a
+              href="https://home.erronliu.top/blog/"
+              >Blogs</a
+            >
+          </div>
+          <h1 class="post-title">
+            【新手向】利用 Vercel 搭建专属 ChatGPT 网站
+          </h1>
+          <div class="post-meta">
+            <span title="2023-04-22 22:00:00 +0800 CST">April 22, 2023</span>
+          </div>
+        </header>
+        <div class="toc">
+          <details>
+            <summary accesskey="c" title="(Alt + C)">
+              <span class="details">Table of Contents</span>
+            </summary>
 
-<article class="post-single">
-  <header class="post-header">
-    <div class="breadcrumbs"><a href="https://erronliu.top/home/">Home</a>&nbsp;»&nbsp;<a href="https://erronliu.top/home/blog/">Blogs</a></div>
-    <h1 class="post-title">
-      【新手向】利用 Vercel 搭建专属 ChatGPT 网站
-    </h1>
-    <div class="post-meta"><span title='2023-04-22 22:00:00 +0800 CST'>April 22, 2023</span>
-
-</div>
-  </header> <div class="toc">
-    <details >
-        <summary accesskey="c" title="(Alt + C)">
-            <span class="details">Table of Contents</span>
-        </summary>
-
-        <div class="inner"><ul>
+            <div class="inner">
+              <ul>
                 <li>
-                    <a href="#%e7%ac%ac%e4%b8%80%e6%ad%a5fork-%e4%bb%93%e5%ba%93" aria-label="第一步：Fork 仓库">第一步：Fork 仓库</a></li>
-                <li>
-                    <a href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5%e5%88%9b%e5%bb%ba-vercel-%e5%ba%94%e7%94%a8" aria-label="第二步：创建 Vercel 应用">第二步：创建 Vercel 应用</a></li>
-                <li>
-                    <a href="#%e7%ac%ac%e4%b8%89%e6%ad%a5%e5%bc%80%e5%a7%8b%e4%bd%bf%e7%94%a8%e5%90%a7" aria-label="第三步：开始使用吧">第三步：开始使用吧</a>
+                  <a
+                    href="#%e7%ac%ac%e4%b8%80%e6%ad%a5fork-%e4%bb%93%e5%ba%93"
+                    aria-label="第一步：Fork 仓库"
+                    >第一步：Fork 仓库</a
+                  >
                 </li>
-            </ul>
+                <li>
+                  <a
+                    href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5%e5%88%9b%e5%bb%ba-vercel-%e5%ba%94%e7%94%a8"
+                    aria-label="第二步：创建 Vercel 应用"
+                    >第二步：创建 Vercel 应用</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#%e7%ac%ac%e4%b8%89%e6%ad%a5%e5%bc%80%e5%a7%8b%e4%bd%bf%e7%94%a8%e5%90%a7"
+                    aria-label="第三步：开始使用吧"
+                    >第三步：开始使用吧</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </details>
         </div>
-    </details>
-</div>
 
-  <div class="post-content"><p>OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用 ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP 又是限速，使用体验已经很差，本篇来介绍如何将 GitHub 上开源的网站直接部署到白嫖的 Vercel 服务器上，纯小白向，打造个人专属的 ChatGPT 助手。下面是我个人搭好的网站的效果图。</p>
-<p><img loading="lazy" src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/0422-vercel-1.png" alt="0422-vercel-1"  />
-</p>
-<blockquote>
-<p>首先是前提条件，你需要拥有有效的 OpenAI API key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。</p>
-</blockquote>
-<hr>
-<h2 id="第一步fork-仓库">第一步：Fork 仓库<a hidden class="anchor" aria-hidden="true" href="#第一步fork-仓库">#</a></h2>
-<p>第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel 帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动 Fork 仓库的方式。</p>
-<p>首先来到 <a href="https://github.com/Yidadaa/ChatGPT-Next-Web">ChatGPT-Next-Web</a>，点击右上角「Fork」按钮，来到 Fork 设置。可以修改一下仓库名字，比如我加了个后缀变成了 <code>ChatGPT-Next-Web-Weleen</code>，然后点击创建即可。</p>
-<p>创建好了之后呢，还需要开启代码自动更新，也就是原作者更新代码你的仓库也会更新。具体做法是：</p>
-<ol>
-<li>来到你 Fork 好的仓库。</li>
-<li>点击「Actions」，点击下方的绿色按钮，启用工作流功能。</li>
-<li>点击左侧「Upstream Sync」，最后点击右侧「Enable Workflow」，搞定。</li>
-</ol>
-<hr>
-<h2 id="第二步创建-vercel-应用">第二步：创建 Vercel 应用<a hidden class="anchor" aria-hidden="true" href="#第二步创建-vercel-应用">#</a></h2>
-<p>有了仓库，我们就可以开始部署了。一般来说，只有拥有服务器才能部署，但 Vercel 免费为用户提供了基础的部署功能，相当于可以白嫖他们家的服务器。顺带一提，Vercel 是一个用于托管 Web 应用的云平台，提供了自动化构建、持续部署、实时分析等功能。</p>
-<p>首先来到 <a href="https://vercel.com/">Vercel 官网</a>，没有账号的话创建一个，然后找到创建项目（<del>这应该不会有人找不到吧</del>），开始创建项目。</p>
-<p>创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。</p>
-<p>选择好了仓库，右侧就是一些详细设置：</p>
-<ul>
-<li>「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。</li>
-<li>「Framework Preset」一栏保持 <code>Next.js</code> 不变。</li>
-<li>「Root Directory」保持不变。</li>
-<li>点击「Environment Variables」，添加两组环境变量：
-<ul>
-<li><code>OPENAI_API_KEY</code>，值填入你的 OpenAI API key。</li>
-<li><code>CODE</code>，由于 key 的余额是有限的，我们当然不希望别人也能随便使用，所以需要在这里设置访问密码。建议大小写字母、数字和特殊符号组合使用，尽可能降低被破解的可能性。支持创建多个密码并用 <code>,</code> 隔开，例如 <code>Abc!123,Xyz@987</code>。</li>
-</ul>
-</li>
-</ul>
-<p>万事俱备之后，点击「Deploy」，Vercel 就会开始自动帮你编译构建你的网站了。稍事等待即可。</p>
-<hr>
-<h2 id="第三步开始使用吧">第三步：开始使用吧<a hidden class="anchor" aria-hidden="true" href="#第三步开始使用吧">#</a></h2>
-<p>如果前面的步骤都没问题，你的网站应该已经准备就绪。可以通过 Vercel 进入，也可以直接记住域名，输入域名访问。美中不足的是需要魔法，除非你有自己的域名并且设置了代理。</p>
-<p>进入之后，点击左下角可以进行设置，这里需要在「访问密码」一项中填写你刚刚设置的 <code>CODE</code> 的值，如果有多个密码选一个填进去就行。其他的设置也可以调整，例如添加自己的 Prompt 以及修改每次提问携带的历史消息数等等。不过不熟悉的地方不建议乱调，可能会影响 AI 表现。</p>
-<p>如果访问密码正确，API key 也有效，那么请开始尽情享用专属于你的 ChatGPT 助手吧。使用 OpenAI API 方式来提问的不足在于，API key 会过期，并且回答的质量上会稍逊于直接来自 ChatGPT 官网的回答，但优势在于酷炫的外观和支持自定义参数。最重要的一点是，自己搭的网站能做到全天候秒回，有了它之后，你再也不必忍受官网的「Access Denied」、漫长的「思考时间」以及各种用着用着突然跳出来的网络错误提示😅。</p>
-<p>祝你 AI 愉快！</p>
+        <div class="post-content">
+          <p>
+            OpenAI 凭借一己之力开辟了生成式 AI 元年，想必大家要么正在使用
+            ChatGPT，要么苦恼于找不到使用的门道。鉴于 ChatGPT 官网又是锁 IP
+            又是限速，使用体验已经很差，本篇来介绍如何将 GitHub
+            上开源的网站直接部署到白嫖的 Vercel
+            服务器上，纯小白向，打造个人专属的 ChatGPT
+            助手。下面是我个人搭好的网站的效果图。
+          </p>
+          <p>
+            <img
+              loading="lazy"
+              src="https://erronliu-typora-picgo.oss-cn-hangzhou.aliyuncs.com/uploaded/0422-vercel-1.png"
+              alt="0422-vercel-1"
+            />
+          </p>
+          <blockquote>
+            <p>
+              首先是前提条件，你需要拥有有效的 OpenAI API
+              key，具体获取方式此处不展开。此外，还需要掌握一些，那个，嗯，就是，例如说，科学，或者说，魔法，之类的。
+            </p>
+          </blockquote>
+          <hr />
+          <h2 id="第一步fork-仓库">
+            第一步：Fork 仓库<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#第一步fork-仓库"
+              >#</a
+            >
+          </h2>
+          <p>
+            第一步我们首先需要拥有自己的 GitHub 代码仓库，虽然可以让 Vercel
+            帮你自动创建，但这样会导致无法及时获取原作者的代码更新，强迫症当场去世，因此此处只介绍手动
+            Fork 仓库的方式。
+          </p>
+          <p>
+            首先来到
+            <a href="https://github.com/Yidadaa/ChatGPT-Next-Web"
+              >ChatGPT-Next-Web</a
+            >，点击右上角「Fork」按钮，来到 Fork
+            设置。可以修改一下仓库名字，比如我加了个后缀变成了
+            <code>ChatGPT-Next-Web-Weleen</code>，然后点击创建即可。
+          </p>
+          <p>
+            创建好了之后呢，还需要开启代码自动更新，也就是原作者更新代码你的仓库也会更新。具体做法是：
+          </p>
+          <ol>
+            <li>来到你 Fork 好的仓库。</li>
+            <li>点击「Actions」，点击下方的绿色按钮，启用工作流功能。</li>
+            <li>
+              点击左侧「Upstream Sync」，最后点击右侧「Enable Workflow」，搞定。
+            </li>
+          </ol>
+          <hr />
+          <h2 id="第二步创建-vercel-应用">
+            第二步：创建 Vercel 应用<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#第二步创建-vercel-应用"
+              >#</a
+            >
+          </h2>
+          <p>
+            有了仓库，我们就可以开始部署了。一般来说，只有拥有服务器才能部署，但
+            Vercel
+            免费为用户提供了基础的部署功能，相当于可以白嫖他们家的服务器。顺带一提，Vercel
+            是一个用于托管 Web
+            应用的云平台，提供了自动化构建、持续部署、实时分析等功能。
+          </p>
+          <p>
+            首先来到
+            <a href="https://vercel.com/">Vercel 官网</a
+            >，没有账号的话创建一个，然后找到创建项目（<del>这应该不会有人找不到吧</del>），开始创建项目。
+          </p>
+          <p>
+            创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub
+            登录一下，并且把访问你的仓库的权限开放给
+            Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。
+          </p>
+          <p>选择好了仓库，右侧就是一些详细设置：</p>
+          <ul>
+            <li>
+              「Project
+              Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就
+              ok。
+            </li>
+            <li>「Framework Preset」一栏保持 <code>Next.js</code> 不变。</li>
+            <li>「Root Directory」保持不变。</li>
+            <li>
+              点击「Environment Variables」，添加两组环境变量：
+              <ul>
+                <li>
+                  <code>OPENAI_API_KEY</code>，值填入你的 OpenAI API key。
+                </li>
+                <li>
+                  <code>CODE</code>，由于 key
+                  的余额是有限的，我们当然不希望别人也能随便使用，所以需要在这里设置访问密码。建议大小写字母、数字和特殊符号组合使用，尽可能降低被破解的可能性。支持创建多个密码并用
+                  <code>,</code> 隔开，例如 <code>Abc!123,Xyz@987</code>。
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <p>
+            万事俱备之后，点击「Deploy」，Vercel
+            就会开始自动帮你编译构建你的网站了。稍事等待即可。
+          </p>
+          <hr />
+          <h2 id="第三步开始使用吧">
+            第三步：开始使用吧<a
+              hidden
+              class="anchor"
+              aria-hidden="true"
+              href="#第三步开始使用吧"
+              >#</a
+            >
+          </h2>
+          <p>
+            如果前面的步骤都没问题，你的网站应该已经准备就绪。可以通过 Vercel
+            进入，也可以直接记住域名，输入域名访问。美中不足的是需要魔法，除非你有自己的域名并且设置了代理。
+          </p>
+          <p>
+            进入之后，点击左下角可以进行设置，这里需要在「访问密码」一项中填写你刚刚设置的
+            <code>CODE</code>
+            的值，如果有多个密码选一个填进去就行。其他的设置也可以调整，例如添加自己的
+            Prompt
+            以及修改每次提问携带的历史消息数等等。不过不熟悉的地方不建议乱调，可能会影响
+            AI 表现。
+          </p>
+          <p>
+            如果访问密码正确，API key 也有效，那么请开始尽情享用专属于你的
+            ChatGPT 助手吧。使用 OpenAI API 方式来提问的不足在于，API key
+            会过期，并且回答的质量上会稍逊于直接来自 ChatGPT
+            官网的回答，但优势在于酷炫的外观和支持自定义参数。最重要的一点是，自己搭的网站能做到全天候秒回，有了它之后，你再也不必忍受官网的「Access
+            Denied」、漫长的「思考时间」以及各种用着用着突然跳出来的网络错误提示😅。
+          </p>
+          <p>祝你 AI 愉快！</p>
+        </div>
 
-
-  </div>
-
-  <footer class="post-footer">
-    <ul class="post-tags">
-    </ul>
-  </footer>
-</article>
+        <footer class="post-footer">
+          <ul class="post-tags"></ul>
+        </footer>
+      </article>
     </main>
-    
-<footer class="footer">
-    <span>&copy; 2023 <a href="https://erronliu.top/home/">Weleen Words</a></span>
-    <span>
-        Powered by
-        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
-        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
-    </span>
-</footer>
-<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
-        <path d="M12 6H0l6-6z" />
-    </svg>
-</a>
 
-<script>
-    let menu = document.getElementById('menu')
-    if (menu) {
+    <footer class="footer">
+      <span
+        >&copy; 2023 <a href="https://home.erronliu.top/">Weleen Words</a></span
+      >
+      <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank"
+          >Hugo</a
+        >
+        &
+        <a
+          href="https://github.com/adityatelange/hugo-PaperMod/"
+          rel="noopener"
+          target="_blank"
+          >PaperMod</a
+        >
+      </span>
+    </footer>
+    <a
+      href="#top"
+      aria-label="go to top"
+      title="Go to Top (Alt + G)"
+      class="top-link"
+      id="top-link"
+      accesskey="g"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 12 6"
+        fill="currentColor"
+      >
+        <path d="M12 6H0l6-6z" />
+      </svg>
+    </a>
+
+    <script>
+      let menu = document.getElementById("menu");
+      if (menu) {
         menu.scrollLeft = localStorage.getItem("menu-scroll-position");
         menu.onscroll = function () {
-            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
-        }
-    }
+          localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        };
+      }
 
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", function (e) {
-            e.preventDefault();
-            var id = this.getAttribute("href").substr(1);
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
-                    behavior: "smooth"
-                });
-            } else {
-                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
-            }
-            if (id === "top") {
-                history.replaceState(null, null, " ");
-            } else {
-                history.pushState(null, null, `#${id}`);
-            }
+          e.preventDefault();
+          var id = this.getAttribute("href").substr(1);
+          if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            document
+              .querySelector(`[id='${decodeURIComponent(id)}']`)
+              .scrollIntoView({
+                behavior: "smooth",
+              });
+          } else {
+            document
+              .querySelector(`[id='${decodeURIComponent(id)}']`)
+              .scrollIntoView();
+          }
+          if (id === "top") {
+            history.replaceState(null, null, " ");
+          } else {
+            history.pushState(null, null, `#${id}`);
+          }
         });
-    });
-
-</script>
-<script>
-    var mybutton = document.getElementById("top-link");
-    window.onscroll = function () {
-        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
-            mybutton.style.visibility = "visible";
-            mybutton.style.opacity = "1";
+      });
+    </script>
+    <script>
+      var mybutton = document.getElementById("top-link");
+      window.onscroll = function () {
+        if (
+          document.body.scrollTop > 800 ||
+          document.documentElement.scrollTop > 800
+        ) {
+          mybutton.style.visibility = "visible";
+          mybutton.style.opacity = "1";
         } else {
-            mybutton.style.visibility = "hidden";
-            mybutton.style.opacity = "0";
+          mybutton.style.visibility = "hidden";
+          mybutton.style.opacity = "0";
         }
-    };
-
-</script>
-<script>
-    document.getElementById("theme-toggle").addEventListener("click", () => {
+      };
+    </script>
+    <script>
+      document.getElementById("theme-toggle").addEventListener("click", () => {
         if (document.body.className.includes("dark")) {
-            document.body.classList.remove('dark');
-            localStorage.setItem("pref-theme", 'light');
+          document.body.classList.remove("dark");
+          localStorage.setItem("pref-theme", "light");
         } else {
-            document.body.classList.add('dark');
-            localStorage.setItem("pref-theme", 'dark');
+          document.body.classList.add("dark");
+          localStorage.setItem("pref-theme", "dark");
         }
-    })
-
-</script>
-<script>
-    document.querySelectorAll('pre > code').forEach((codeblock) => {
+      });
+    </script>
+    <script>
+      document.querySelectorAll("pre > code").forEach((codeblock) => {
         const container = codeblock.parentNode.parentNode;
 
-        const copybutton = document.createElement('button');
-        copybutton.classList.add('copy-code');
-        copybutton.innerHTML = 'copy';
+        const copybutton = document.createElement("button");
+        copybutton.classList.add("copy-code");
+        copybutton.innerHTML = "copy";
 
         function copyingDone() {
-            copybutton.innerHTML = 'copied!';
-            setTimeout(() => {
-                copybutton.innerHTML = 'copy';
-            }, 2000);
+          copybutton.innerHTML = "copied!";
+          setTimeout(() => {
+            copybutton.innerHTML = "copy";
+          }, 2000);
         }
 
-        copybutton.addEventListener('click', (cb) => {
-            if ('clipboard' in navigator) {
-                navigator.clipboard.writeText(codeblock.textContent);
-                copyingDone();
-                return;
-            }
+        copybutton.addEventListener("click", (cb) => {
+          if ("clipboard" in navigator) {
+            navigator.clipboard.writeText(codeblock.textContent);
+            copyingDone();
+            return;
+          }
 
-            const range = document.createRange();
-            range.selectNodeContents(codeblock);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            try {
-                document.execCommand('copy');
-                copyingDone();
-            } catch (e) { };
-            selection.removeRange(range);
+          const range = document.createRange();
+          range.selectNodeContents(codeblock);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          try {
+            document.execCommand("copy");
+            copyingDone();
+          } catch (e) {}
+          selection.removeRange(range);
         });
 
         if (container.classList.contains("highlight")) {
-            container.appendChild(copybutton);
+          container.appendChild(copybutton);
         } else if (container.parentNode.firstChild == container) {
-            
-        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
-            
-            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else if (
+          codeblock.parentNode.parentNode.parentNode.parentNode.parentNode
+            .nodeName == "TABLE"
+        ) {
+          codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(
+            copybutton
+          );
         } else {
-            
-            codeblock.parentNode.appendChild(copybutton);
+          codeblock.parentNode.appendChild(copybutton);
         }
-    });
-</script>
-</body>
-
+      });
+    </script>
+  </body>
 </html>

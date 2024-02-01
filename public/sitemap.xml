@@ -2,25 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://erronliu.top/home/blog/</loc>
+    <loc>https://home.erronliu.top/blog/</loc>
     <lastmod>2023-04-23T13:40:00+08:00</lastmod>
   </url><url>
-    <loc>https://erronliu.top/home/</loc>
+    <loc>https://home.erronliu.top/</loc>
     <lastmod>2023-04-23T13:40:00+08:00</lastmod>
   </url><url>
-    <loc>https://erronliu.top/home/blog/0423-server/</loc>
+    <loc>https://home.erronliu.top/blog/0423-server/</loc>
     <lastmod>2023-04-23T13:40:00+08:00</lastmod>
   </url><url>
-    <loc>https://erronliu.top/home/blog/0422-vercel/</loc>
+    <loc>https://home.erronliu.top/blog/0422-vercel/</loc>
     <lastmod>2023-04-22T22:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://erronliu.top/home/blog/hello/</loc>
+    <loc>https://home.erronliu.top/blog/hello/</loc>
     <lastmod>2023-04-22T14:00:00+08:00</lastmod>
   </url><url>
-    <loc>https://erronliu.top/home/archives/</loc>
+    <loc>https://home.erronliu.top/archives/</loc>
   </url><url>
-    <loc>https://erronliu.top/home/categories/</loc>
+    <loc>https://home.erronliu.top/categories/</loc>
   </url><url>
-    <loc>https://erronliu.top/home/tags/</loc>
+    <loc>https://home.erronliu.top/tags/</loc>
   </url>
 </urlset>

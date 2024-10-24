@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Series on Weleen Words</title>
+    <link>https://home.erronliu.top/series/</link>
+    <description>Recent content in Series on Weleen Words</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 24 Oct 2024 20:10:24 +0800</lastBuildDate><atom:link href="https://home.erronliu.top/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>编程杂谈</title>
+      <link>https://home.erronliu.top/series/%E7%BC%96%E7%A8%8B%E6%9D%82%E8%B0%88/</link>
+      <pubDate>Thu, 24 Oct 2024 20:10:24 +0800</pubDate>
+      
+      <guid>https://home.erronliu.top/series/%E7%BC%96%E7%A8%8B%E6%9D%82%E8%B0%88/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>搭个网站</title>
+      <link>https://home.erronliu.top/series/%E6%90%AD%E4%B8%AA%E7%BD%91%E7%AB%99/</link>
+      <pubDate>Sun, 23 Apr 2023 13:40:00 +0800</pubDate>
+      
+      <guid>https://home.erronliu.top/series/%E6%90%AD%E4%B8%AA%E7%BD%91%E7%AB%99/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

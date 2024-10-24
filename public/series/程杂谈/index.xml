@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>程杂谈 on Weleen Words</title>
+    <link>https://home.erronliu.top/series/%E7%A8%8B%E6%9D%82%E8%B0%88/</link>
+    <description>Recent content in 程杂谈 on Weleen Words</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 15 Jan 2024 10:10:10 +0800</lastBuildDate><atom:link href="https://home.erronliu.top/series/%E7%A8%8B%E6%9D%82%E8%B0%88/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>【算法问题】可阅读的字节数</title>
+      <link>https://home.erronliu.top/blog/240115-readable/</link>
+      <pubDate>Mon, 15 Jan 2024 10:10:10 +0800</pubDate>
+      
+      <guid>https://home.erronliu.top/blog/240115-readable/</guid>
+      <description>真的很久很久没来写博客了呢。倒也不是完全没东西写，只是写过博客才发现要把自己的知识清楚地表达出来其实不是那么简单的事情，感觉这件事情太费心力了，就一直没有抽出时间。
+所以为什么突然又出现在了这里呢，只是因为想要分享一道编程问题。这个问题特别有意思，我刚开始读题的时候心想「这种小儿科问题，我五分钟都不用就写完了」，可实际动手才发现远没有那么简单。最终，在这个问题上我花费了超过 6 个小时，汗流浃背了小老弟。
+问题的原博客见这个链接。下面是问题的概述：给出一个 64 位的无符号整数 num，把「num 个字节」转换为可阅读的格式并返回。举个很简单的例子：如果传入的参数是 666,888，就表示 666,888 个字节，它对应的是 666.888 kB，所以应该返回字符串 &amp;quot;666.9 kB&amp;quot;。
+ 前排提示：本文包含了较多数学公式，而很不幸的是它们在部分浏览器上无法被正常渲染。如果你发现文中的数学公式显示为 LaTeX 源代码导致难以阅读，可以尝试更换浏览器。
+  一些前置知识 关于参数 函数的参数 num 是一个 64 位无符号整数，意味着它的值在 $[0,2^{64}-1]$ 区间内，对于该区间内的任何整数，我们都应该能够正确处理。
+有小伙伴可能会问：Java 之类没有 64 位无符号整数的语言怎么办？对于有符号的 64 位整数（例如 Java 的 long），我们规定非负数正常处理，而负数取绝对值，所以此时的范围区间是 $[0,2^{63}-1]$。
+本文的代码均使用 Go 语言编写，它包含原生的 uint64 类型。不用担心看不懂 Go 代码，把它看成语法简化一点的 Java 就可以。
+关于单位 计算机存储容量的计量单位有两种标准：国际单位制 SI 以及二进制制式。
+在 SI 中，1 kB 等于 1000 B，注意这里的 k 是小写。此后每 1000 倍分别对应 MB, GB, TB, PB, EB。比 EB 还大的单位我们可以不用管，因为本题的数据最大不超过 20 EB。</description>
+    </item>
+    
+  </channel>
+</rss>

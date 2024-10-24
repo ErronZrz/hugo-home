@@ -1,46 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Blogs on Weleen Words</title>
-    <link>https://home.erronliu.top/blog/</link>
-    <description>Recent content in Blogs on Weleen Words</description>
+    <title>搭个网站 on Weleen Words</title>
+    <link>https://home.erronliu.top/series/%E6%90%AD%E4%B8%AA%E7%BD%91%E7%AB%99/</link>
+    <description>Recent content in 搭个网站 on Weleen Words</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 24 Oct 2024 20:10:24 +0800</lastBuildDate><atom:link href="https://home.erronliu.top/blog/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>【算法问题】132 序列</title>
-      <link>https://home.erronliu.top/blog/241024-132/</link>
-      <pubDate>Thu, 24 Oct 2024 20:10:24 +0800</pubDate>
-      
-      <guid>https://home.erronliu.top/blog/241024-132/</guid>
-      <description>刚好是 10 月 24 日程序员日，拖更了一万年的我决定来稍微写点东西。
-来看看算法题里面的经典套路之单调栈吧。
- 认识单调栈 首先来看这样一个数组：[3, 1, 5, 8, 6, 4, 7, 2, 9]，假设每个数字都等于这个数的身高，考虑这样一个问题：对于数组中的每个数，它左侧比它高的数里，离它最近的是谁？
-逐一查看，我们可以写下答案：[-1, 3, -1, -1, 8, 6, 8, 7, -1]。但是如何用算法来解决这个问题？
-首先考虑最左边的 3，由于它是最左侧的元素，直接标记下标 0 的答案为 -1，但是 3 可能成为后面的答案，所以我们可以拿一个「小本本」写下 3。
-接下来是 1，我们检查「小本本」，发现它左侧的 3 比它高，所以下标为 1 的答案为 3。同样地，我们把 1 写进「小本本」。
-再然后是 5，「小本本」上没有比它高的元素，因此填上 -1。这时我们可以发现一个问题，对于 5 右边的所有元素，答案都不再可能是 1 或者 3，因为如果一个数小于 3，那么必然也小于 5，而 5 比 3 离这些数都更近。
-于是，我们在把 5 写进「小本本」之前，可以直接把 1 和 3 全部清空，因为它们不可能再成为答案了。
-同样的道理，在把 8 写进「小本本」之前，我们可以清空 5；在把 7 写进「小本本」之前，我们可以清空 4 和 6，但左侧的 8 依然保留，因为不确定后面是不是会有另一个 7。</description>
-    </item>
-    
-    <item>
-      <title>【算法问题】可阅读的字节数</title>
-      <link>https://home.erronliu.top/blog/240115-readable/</link>
-      <pubDate>Mon, 15 Jan 2024 10:10:10 +0800</pubDate>
-      
-      <guid>https://home.erronliu.top/blog/240115-readable/</guid>
-      <description>真的很久很久没来写博客了呢。倒也不是完全没东西写，只是写过博客才发现要把自己的知识清楚地表达出来其实不是那么简单的事情，感觉这件事情太费心力了，就一直没有抽出时间。
-所以为什么突然又出现在了这里呢，只是因为想要分享一道编程问题。这个问题特别有意思，我刚开始读题的时候心想「这种小儿科问题，我五分钟都不用就写完了」，可实际动手才发现远没有那么简单。最终，在这个问题上我花费了超过 6 个小时，汗流浃背了小老弟。
-问题的原博客见这个链接。下面是问题的概述：给出一个 64 位的无符号整数 num，把「num 个字节」转换为可阅读的格式并返回。举个很简单的例子：如果传入的参数是 666,888，就表示 666,888 个字节，它对应的是 666.888 kB，所以应该返回字符串 &amp;quot;666.9 kB&amp;quot;。
- 前排提示：本文包含了较多数学公式，而很不幸的是它们在部分浏览器上无法被正常渲染。如果你发现文中的数学公式显示为 LaTeX 源代码导致难以阅读，可以尝试更换浏览器。
-  一些前置知识 关于参数 函数的参数 num 是一个 64 位无符号整数，意味着它的值在 $[0,2^{64}-1]$ 区间内，对于该区间内的任何整数，我们都应该能够正确处理。
-有小伙伴可能会问：Java 之类没有 64 位无符号整数的语言怎么办？对于有符号的 64 位整数（例如 Java 的 long），我们规定非负数正常处理，而负数取绝对值，所以此时的范围区间是 $[0,2^{63}-1]$。
-本文的代码均使用 Go 语言编写，它包含原生的 uint64 类型。不用担心看不懂 Go 代码，把它看成语法简化一点的 Java 就可以。
-关于单位 计算机存储容量的计量单位有两种标准：国际单位制 SI 以及二进制制式。
-在 SI 中，1 kB 等于 1000 B，注意这里的 k 是小写。此后每 1000 倍分别对应 MB, GB, TB, PB, EB。比 EB 还大的单位我们可以不用管，因为本题的数据最大不超过 20 EB。</description>
-    </item>
-    
+    <lastBuildDate>Sun, 23 Apr 2023 13:40:00 +0800</lastBuildDate><atom:link href="https://home.erronliu.top/series/%E6%90%AD%E4%B8%AA%E7%BD%91%E7%AB%99/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>【新手向】手把手教你只用一个域名部署多个站点</title>
       <link>https://home.erronliu.top/blog/230423-server/</link>
@@ -74,18 +40,6 @@
 创建项目会引导你使用你的 GitHub 仓库，这里就需要用 GitHub 登录一下，并且把访问你的仓库的权限开放给 Vercel，权限有了你应该就能找到自己刚刚 Fork 的仓库。
 选择好了仓库，右侧就是一些详细设置：
  「Project Name」是你的项目名称，该名称也将是你最终网站域名的一部分，你自己取就好，只要不和已有项目重名就 ok。 「Framework Preset」一栏保持 Next.</description>
-    </item>
-    
-    <item>
-      <title>Hello</title>
-      <link>https://home.erronliu.top/blog/hello/</link>
-      <pubDate>Sat, 22 Apr 2023 14:00:00 +0800</pubDate>
-      
-      <guid>https://home.erronliu.top/blog/hello/</guid>
-      <description>很高兴见到你！
-我是 Weleen，一个卑微的研究生。
-总之这一篇只是用来测试的而已。
-就这样啦。</description>
     </item>
     
   </channel>

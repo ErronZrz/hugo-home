@@ -15,8 +15,8 @@ menus:
   - name: "Home"
     pageRef: "/"
     weight: 10
-  - name: "搭个网站"
-    pageRef: "/series/搭个网站"
+  - name: "随便玩玩"
+    pageRef: "/series/随便玩玩"
     weight: 20
   - name: "编程杂谈"
     pageRef: "/series/编程杂谈"
